@@ -3,8 +3,16 @@
 import { useState } from "react";
 
 const essentials = [
-  { name: "Essential Tee", line: "240g · Algodão premium", image: "/collection/lugano-camisetas-basicas-lc-v2.png", className: "wide" },
-  { name: "Club Polo", line: "Estrutura impecável", image: "/collection/lugano-polos-quatro-cores.png", className: "tall" },
+  { name: "Star Hoodie Black", line: "Moletom premium · Preto", image: "/collection/lugano-star-hoodie-preto.png", className: "small" },
+  { name: "Star Hoodie White", line: "Moletom premium · Branco", image: "/collection/lugano-star-hoodie-branco.png", className: "small" },
+  { name: "Star Hoodie Off-White", line: "Moletom premium · Off-white", image: "/collection/lugano-star-hoodie-off-white.png", className: "small" },
+  { name: "Star Tee Black", line: "Algodão pesado · Preto", image: "/collection/lugano-star-tee-preta.png", className: "small" },
+  { name: "Star Tee White", line: "Algodão pesado · Branco", image: "/collection/lugano-star-tee-branca.png", className: "small" },
+  { name: "Star Tee Off-White", line: "Algodão pesado · Off-white", image: "/collection/lugano-star-tee-off-white.png", className: "small" },
+  { name: "Essential Tee Off-White", line: "240g · Off-white", image: "/collection/lugano-essential-tee-off-white.png", className: "small" },
+  { name: "Essential Tee Navy", line: "240g · Azul-marinho", image: "/collection/lugano-essential-tee-navy.png", className: "small" },
+  { name: "Essential Tee Gray", line: "240g · Cinza", image: "/collection/lugano-essential-tee-cinza.png", className: "small" },
+  { name: "Essential Tee Sage", line: "240g · Verde-sálvia", image: "/collection/lugano-essential-tee-salvia.png", className: "small" },
   { name: "Club Cap", line: "Tactel ultraleve", image: "/collection/lugano-bone-tactel-v3-logo-correta.png", className: "small" },
   { name: "Riviera", line: "Proteção UV400", image: "/collection/lugano-oculos.png", className: "small" },
 ];
@@ -81,7 +89,7 @@ export default function Home() {
       <section className="lookbook">
         <div className="lookbookCopy shell"><p className="overline">Lugano, todos os dias</p><h2>Uma coleção.<br />Infinitas versões.</h2><p>Do essencial ao detalhe final, cada peça foi desenhada para combinar com o que você já conquistou — e com o que ainda vem pela frente.</p><a className="primary" href="#collection">Montar meu look</a></div>
         <div className="lookbookImages shell">
-          <div><img src="/collection/lugano-polos-quatro-cores.png" alt="Polos Lugano em quatro cores" /></div>
+          <div><img src="/collection/lugano-star-hoodies.png" alt="Moletons Star da Lugano em três cores" /></div>
           <div><img src="/collection/lugano-bone-algodao.png" alt="Boné Lugano em algodão" /></div>
           <div><img src="/collection/lugano-pulseiras.png" alt="Pulseiras Lugano" /></div>
         </div>
