@@ -68,6 +68,25 @@ export default function Home() {
         <div className="editorialCopy"><p className="overline">The Ambition Edit</p><h2>Feito para quem<br />não chegou até aqui<br />por acaso.</h2><p>Um guarda-roupa preciso para dias que pedem presença. Do primeiro compromisso ao último plano da noite.</p><a className="primary dark" href="#collection">Conhecer o drop</a></div>
       </section>
 
+      <section className="craft shell">
+        <div className="craftIntro"><p className="overline">Construído para durar</p><h2>Qualidade que você<br />percebe de perto.</h2></div>
+        <div className="craftGrid">
+          <article><span>01</span><div><h3>Algodão de alta gramatura</h3><p>Toque encorpado, macio e resistente. Mantém a estrutura mesmo depois de muitos usos.</p></div></article>
+          <article><span>02</span><div><h3>Caimento estudado</h3><p>Proporções equilibradas para vestir bem sem limitar seus movimentos.</p></div></article>
+          <article><span>03</span><div><h3>Acabamento preciso</h3><p>Costuras reforçadas e detalhes pensados para atravessar temporadas.</p></div></article>
+          <article><span>04</span><div><h3>Produção consciente</h3><p>Menos excessos, escolhas melhores e peças que permanecem relevantes.</p></div></article>
+        </div>
+      </section>
+
+      <section className="lookbook">
+        <div className="lookbookCopy shell"><p className="overline">Lugano, todos os dias</p><h2>Uma coleção.<br />Infinitas versões.</h2><p>Do essencial ao detalhe final, cada peça foi desenhada para combinar com o que você já conquistou — e com o que ainda vem pela frente.</p><a className="primary" href="#collection">Montar meu look</a></div>
+        <div className="lookbookImages shell">
+          <div><img src="/collection/lugano-polos-quatro-cores.png" alt="Polos Lugano em quatro cores" /></div>
+          <div><img src="/collection/lugano-bone-algodao.png" alt="Boné Lugano em algodão" /></div>
+          <div><img src="/collection/lugano-pulseiras.png" alt="Pulseiras Lugano" /></div>
+        </div>
+      </section>
+
       <section className="club" id="club">
         <div className="clubInner shell">
           <p className="overline">Acesso antecipado · Edições limitadas</p>
