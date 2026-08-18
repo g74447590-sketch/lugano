@@ -1,3 +1,7 @@
+"use client";
+
+import { useState } from "react";
+
 const essentials = [
   { name: "Essential Tee", line: "240g · Algodão premium", image: "/collection/lugano-camisetas-basicas-lc-v2.png", className: "wide" },
   { name: "Club Polo", line: "Estrutura impecável", image: "/collection/lugano-polos-quatro-cores.png", className: "tall" },
@@ -8,6 +12,8 @@ const essentials = [
 function Arrow() { return <span aria-hidden="true">↗</span>; }
 
 export default function Home() {
+  const [subscribed, setSubscribed] = useState(false);
+
   return (
     <main>
       <header className="nav shell">
@@ -48,7 +54,7 @@ export default function Home() {
         <div className="productGrid shell" id="grid">
           {essentials.map((item) => (
             <article className={`product ${item.className}`} key={item.name}>
-              <a href="#club" aria-label={`Conhecer ${item.name}`}>
+              <a href={`https://wa.me/5561991541080?text=${encodeURIComponent(`Olá! Quero saber mais sobre ${item.name} da Lugano.`)}`} target="_blank" rel="noreferrer" aria-label={`Conhecer ${item.name} pelo WhatsApp`}>
                 <div className="productImage"><img src={item.image} alt={item.name} /><span className="quick">Descobrir <Arrow /></span></div>
                 <div className="productMeta"><div><h3>{item.name}</h3><p>{item.line}</p></div><Arrow /></div>
               </a>
@@ -67,14 +73,20 @@ export default function Home() {
           <p className="overline">Acesso antecipado · Edições limitadas</p>
           <h2>Você vai querer<br />saber <span>primeiro.</span></h2>
           <p>Entre para o Lugano Club e tenha acesso ao que vem antes de todo mundo.</p>
-          <form><label><span className="srOnly">Seu melhor e-mail</span><input type="email" placeholder="Seu melhor e-mail" required /><button type="submit">Entrar para o Club <Arrow /></button></label></form>
+          {subscribed ? (
+            <div className="success" role="status"><span>✓</span><div><b>Você está na lista.</b><p>As novidades da Lugano chegarão primeiro para você.</p></div></div>
+          ) : (
+            <form onSubmit={(event) => { event.preventDefault(); setSubscribed(true); }}>
+              <label><span className="srOnly">Seu melhor e-mail</span><input type="email" name="email" autoComplete="email" placeholder="Seu melhor e-mail" required /><button type="submit">Entrar para o Club <Arrow /></button></label>
+            </form>
+          )}
         </div>
       </section>
 
       <footer className="footer shell">
         <div><a className="wordmark" href="#top">LUGANO</a><p>Clássicos contemporâneos<br />para uma vida em movimento.</p></div>
         <div><b>Explore</b><a href="#collection">Coleção</a><a href="#philosophy">Essência</a><a href="#club">Lugano Club</a></div>
-        <div><b>Conecte-se</b><a href="#">Instagram</a><a href="#">Contato</a><a href="#">Atendimento</a></div>
+        <div><b>Conecte-se</b><a href="https://instagram.com/lugano_coo" target="_blank" rel="noreferrer">Instagram</a><a href="https://wa.me/5561991541080" target="_blank" rel="noreferrer">Contato</a><a href="https://wa.me/5561991541080?text=Olá!%20Preciso%20de%20atendimento%20da%20Lugano." target="_blank" rel="noreferrer">Atendimento</a></div>
         <small>© 2026 Lugano Clothing. Todos os direitos reservados.</small><small>São Paulo · Brasil</small>
       </footer>
     </main>
