@@ -72,7 +72,7 @@ export default function Home() {
       </section>
 
       <section className="editorial shell">
-        <div className="editorialImage"><img src="/hero-lugano.png" alt="Ambition Collection da Lugano" /></div>
+        <div className="editorialImage"><img src="/hero-lugano-v2.png" alt="Ambition Collection da Lugano com moletom liso" /></div>
         <div className="editorialCopy"><p className="overline">The Ambition Edit</p><h2>Feito para quem<br />não chegou até aqui<br />por acaso.</h2><p>Um guarda-roupa preciso para dias que pedem presença. Do primeiro compromisso ao último plano da noite.</p><a className="primary dark" href="#collection">Conhecer o drop</a></div>
       </section>
 
