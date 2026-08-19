@@ -98,3 +98,23 @@ actions tied to the current ChatGPT user. Leave public content anonymous.
 
 - [vinext Documentation](https://github.com/cloudflare/vinext)
 - [Drizzle D1 Guide](https://orm.drizzle.team/docs/get-started/d1-new)
+# Lugano Clothing
+
+Site da Lugano construído com React 19, Vinext e Vite para o runtime do
+Cloudflare Workers.
+
+## Publicação no Cloudflare
+
+Este projeto usa renderização no servidor e deve ser conectado como um
+**Worker com Workers Builds**, e não como um projeto Pages estático.
+
+- Build command: `npm run build`
+- Deploy command: `npm run deploy`
+- Root directory: `/`
+- Node.js: `22.13.0` ou superior
+- Output directory: não se aplica a Workers Builds. O deploy usa
+  `dist/server/wrangler.json`, gerado pelo build.
+
+O site não exige Supabase, NextAuth ou segredos de aplicação. No painel do
+Cloudflare, defina apenas `NODE_VERSION=22.13.0` para fixar a versão mínima
+compatível durante o build.
