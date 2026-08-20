@@ -1,120 +1,279 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState, type KeyboardEvent } from "react";
+import Image from "next/image";
 
-const essentials = [
-  { name: "Star Hoodie Black", line: "Moletom premium · Preto", image: "/collection/lugano-star-hoodie-preto.png", className: "small" },
-  { name: "Star Hoodie White", line: "Moletom premium · Branco", image: "/collection/lugano-star-hoodie-branco.png", className: "small" },
-  { name: "Star Hoodie Off-White", line: "Moletom premium · Off-white", image: "/collection/lugano-star-hoodie-off-white.png", className: "small" },
-  { name: "Star Tee Black", line: "Algodão pesado · Preto", image: "/collection/lugano-star-tee-preta.png", className: "small" },
-  { name: "Star Tee White", line: "Algodão pesado · Branco", image: "/collection/lugano-star-tee-branca.png", className: "small" },
-  { name: "Star Tee Off-White", line: "Algodão pesado · Off-white", image: "/collection/lugano-star-tee-off-white.png", className: "small" },
-  { name: "Essential Tee Off-White", line: "240g · Off-white", image: "/collection/lugano-essential-tee-off-white.png", className: "small" },
-  { name: "Essential Tee Navy", line: "240g · Azul-marinho", image: "/collection/lugano-essential-tee-navy.png", className: "small" },
-  { name: "Essential Tee Gray", line: "240g · Cinza", image: "/collection/lugano-essential-tee-cinza.png", className: "small" },
-  { name: "Essential Tee Sage", line: "240g · Verde-sálvia", image: "/collection/lugano-essential-tee-salvia.png", className: "small" },
-  { name: "Club Cap", line: "Tactel ultraleve", image: "/collection/lugano-bone-tactel-v3-logo-correta.png", className: "small" },
-  { name: "Riviera", line: "Proteção UV400", image: "/collection/lugano-oculos.png", className: "small" },
+const WHATSAPP_NUMBER = "5561991541080";
+
+const navItems = [
+  { label: "Coleção", href: "#collection" },
+  { label: "Manifesto", href: "#manifesto" },
+  { label: "Destaques", href: "#destaques" },
+  { label: "Como comprar", href: "#como-comprar" },
 ];
 
-function Arrow() { return <span aria-hidden="true">↗</span>; }
+const categories = [
+  {
+    number: "01",
+    label: "Camisetas",
+    title: "Essenciais com identidade.",
+    copy: "Bases limpas, tons pensados e a assinatura LC.",
+    image: "/collection/lugano-camisetas-basicas-lc-v2.png",
+    alt: "Camisetas Lugano Clothing em quatro cores",
+    theme: "stone",
+  },
+  {
+    number: "02",
+    label: "Moletons",
+    title: "Camadas para vestir com presença.",
+    copy: "A coleção Star em preto, branco e off-white.",
+    image: "/collection/lugano-star-hoodies.png",
+    alt: "Moletons Star da Lugano Clothing em três cores",
+    theme: "ink",
+  },
+  {
+    number: "03",
+    label: "Bonés",
+    title: "O detalhe que fecha o look.",
+    copy: "Uma assinatura discreta para acompanhar todos os dias.",
+    image: "/collection/lugano-bone-algodao.png",
+    alt: "Boné Lugano Clothing em azul-marinho",
+    theme: "sand",
+  },
+  {
+    number: "04",
+    label: "Óculos",
+    title: "Linhas marcantes, sem excesso.",
+    copy: "Riviera: linhas limpas e presença imediata.",
+    image: "/collection/lugano-oculos.png",
+    alt: "Óculos Riviera da Lugano Clothing",
+    theme: "night",
+  },
+];
+
+const products = [
+  { name: "Star Hoodie Black", line: "Moletom · Preto", image: "/collection/lugano-star-hoodie-preto.png" },
+  { name: "Star Hoodie White", line: "Moletom · Branco", image: "/collection/lugano-star-hoodie-branco.png" },
+  { name: "Star Hoodie Off-White", line: "Moletom · Off-white", image: "/collection/lugano-star-hoodie-off-white.png" },
+  { name: "Star Tee Black", line: "Camiseta · Preto", image: "/collection/lugano-star-tee-preta.png" },
+  { name: "Star Tee White", line: "Camiseta · Branco", image: "/collection/lugano-star-tee-branca.png" },
+  { name: "Star Tee Off-White", line: "Camiseta · Off-white", image: "/collection/lugano-star-tee-off-white.png" },
+  { name: "Essential Tee Off-White", line: "Essential · Off-white", image: "/collection/lugano-essential-tee-off-white.png" },
+  { name: "Essential Tee Navy", line: "Essential · Azul-marinho", image: "/collection/lugano-essential-tee-navy.png" },
+  { name: "Essential Tee Gray", line: "Essential · Cinza", image: "/collection/lugano-essential-tee-cinza.png" },
+  { name: "Essential Tee Sage", line: "Essential · Verde-sálvia", image: "/collection/lugano-essential-tee-salvia.png" },
+  { name: "Club Cap", line: "Boné · Azul-marinho", image: "/collection/lugano-bone-tactel-v3-logo-correta.png" },
+  { name: "Riviera", line: "Óculos · Azul-marinho", image: "/collection/lugano-oculos.png" },
+];
+
+function whatsappUrl(message: string) {
+  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+}
+
+function Arrow({ down = false }: { down?: boolean }) {
+  return <span aria-hidden="true">{down ? "↓" : "↗"}</span>;
+}
 
 export default function Home() {
-  const [subscribed, setSubscribed] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const firstMenuLink = useRef<HTMLAnchorElement>(null);
+
+  useEffect(() => {
+    const elements = Array.from(document.querySelectorAll<HTMLElement>("[data-reveal]"));
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (reduceMotion || !("IntersectionObserver" in window)) {
+      elements.forEach((element) => element.classList.add("is-visible"));
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.14, rootMargin: "0px 0px -7%" },
+    );
+
+    elements.forEach((element) => observer.observe(element));
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    firstMenuLink.current?.focus();
+
+    const closeOnEscape = (event: globalThis.KeyboardEvent) => {
+      if (event.key === "Escape") setMenuOpen(false);
+    };
+
+    window.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [menuOpen]);
+
+  const trapMenuFocus = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (event.key !== "Tab") return;
+    const focusable = Array.from(event.currentTarget.querySelectorAll<HTMLElement>("a[href], button:not([disabled])"));
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last?.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first?.focus();
+    }
+  };
 
   return (
     <main>
-      <header className="nav shell">
-        <a className="wordmark" href="#top" aria-label="Lugano, página inicial">LUGANO</a>
-        <nav aria-label="Navegação principal">
-          <a href="#collection">Coleção</a><a href="#philosophy">Essência</a><a href="#club">Lugano Club</a>
-        </nav>
-        <a className="navCta" href="#collection">Comprar <Arrow /></a>
+      <header className="siteHeader">
+        <div className="nav shell">
+          <a className="brandLockup" href="#top" aria-label="Lugano Clothing, página inicial">
+            <strong>LUGANO</strong><span>CLOTHING</span>
+          </a>
+          <nav className="desktopNav" aria-label="Navegação principal">
+            {navItems.map((item) => <a key={item.href} href={item.href}>{item.label}</a>)}
+          </nav>
+          <a className="headerContact" href={whatsappUrl("Olá! Quero conhecer a coleção da Lugano Clothing.")} target="_blank" rel="noreferrer">
+            Atendimento <Arrow />
+          </a>
+          <button className="menuToggle" type="button" aria-expanded={menuOpen} aria-controls="mobile-menu" onClick={() => setMenuOpen(true)}>
+            <span>Menu</span><i aria-hidden="true" />
+          </button>
+        </div>
       </header>
 
-      <section className="hero" id="top">
-        <div className="heroCopy shell">
-          <p className="overline">Ambition Collection · 2026</p>
-          <h1>Ambição,<br /><span>bem vestida.</span></h1>
-          <p>Peças essenciais. Materiais excepcionais.<br />Desenhadas para o seu próximo capítulo.</p>
-          <div className="heroActions"><a className="primary" href="#collection">Explorar a coleção</a><a className="textLink" href="#philosophy">Nossa essência <Arrow /></a></div>
-        </div>
-        <div className="heroVisual">
-          <img src="/collection/lugano-camisetas-basicas-lc-v2.png" alt="Camisetas premium da coleção Lugano" />
-          <p><span>01</span> Essential Tee</p>
-        </div>
-        <a className="scroll" href="#philosophy"><span /> Role para descobrir</a>
-      </section>
-
-      <section className="statement shell" id="philosophy">
-        <p className="overline">A filosofia Lugano</p>
-        <h2>O luxo não precisa<br />chamar <span>atenção.</span></h2>
-        <p className="statementBody">Ele é sentido no toque, percebido no caimento e lembrado pela forma como faz você se sentir. Cada peça existe para durar além da estação.</p>
-        <div className="principles">
-          <article><b>01</b><h3>Matéria</h3><p>Fibras selecionadas por textura, peso e durabilidade.</p></article>
-          <article><b>02</b><h3>Forma</h3><p>Silhuetas precisas que se movem com naturalidade.</p></article>
-          <article><b>03</b><h3>Intenção</h3><p>Nada em excesso. Todo detalhe tem uma razão.</p></article>
-        </div>
-      </section>
-
-      <section className="collection" id="collection">
-        <div className="collectionHead shell"><div><p className="overline">Selecionados para você</p><h2>Essenciais,<br />reimaginados.</h2></div><a className="textLink" href="#grid">Ver todos <Arrow /></a></div>
-        <div className="productGrid shell" id="grid">
-          {essentials.map((item) => (
-            <article className={`product ${item.className}`} key={item.name}>
-              <a href={`https://wa.me/5561991541080?text=${encodeURIComponent(`Olá! Quero saber mais sobre ${item.name} da Lugano.`)}`} target="_blank" rel="noreferrer" aria-label={`Conhecer ${item.name} pelo WhatsApp`}>
-                <div className="productImage"><img src={item.image} alt={item.name} /><span className="quick">Descobrir <Arrow /></span></div>
-                <div className="productMeta"><div><h3>{item.name}</h3><p>{item.line}</p></div><Arrow /></div>
+      {menuOpen && (
+        <dialog className="menuOverlay" id="mobile-menu" open aria-label="Menu" onKeyDown={trapMenuFocus}>
+          <div className="menuTop shell">
+            <span className="menuBrand">LUGANO <small>CLOTHING</small></span>
+            <button type="button" onClick={() => setMenuOpen(false)} aria-label="Fechar menu">Fechar <span aria-hidden="true">×</span></button>
+          </div>
+          <nav className="menuLinks shell" aria-label="Menu mobile">
+            {navItems.map((item, index) => (
+              <a key={item.href} href={item.href} ref={index === 0 ? firstMenuLink : undefined} onClick={() => setMenuOpen(false)}>
+                <small>0{index + 1}</small><span>{item.label}</span><Arrow />
               </a>
+            ))}
+          </nav>
+          <div className="menuFooter shell">
+            <a href="https://instagram.com/lugano_coo" target="_blank" rel="noreferrer">Instagram <Arrow /></a>
+            <a href={whatsappUrl("Olá! Preciso de atendimento da Lugano Clothing.")} target="_blank" rel="noreferrer">WhatsApp <Arrow /></a>
+          </div>
+        </dialog>
+      )}
+
+      <section className="hero" id="top" aria-labelledby="hero-title">
+        <div className="heroMedia" aria-hidden="true"><Image src="/hero-lugano-v2.png" alt="" width={1792} height={937} priority sizes="100vw" /></div>
+        <div className="heroVeil" />
+        <div className="heroContent shell">
+          <p className="eyebrow">Lugano Clothing · Coleção atual</p>
+          <h1 id="hero-title">Presença<br /><em>sem excesso.</em></h1>
+          <p className="heroIntro">Peças para acompanhar o ritmo de todos os dias.</p>
+          <div className="heroActions">
+            <a className="button buttonLight" href="#collection">Ver coleção <Arrow down /></a>
+            <a className="lineLink light" href={whatsappUrl("Olá! Quero conhecer a coleção da Lugano Clothing.")} target="_blank" rel="noreferrer">Falar com a Lugano <Arrow /></a>
+          </div>
+        </div>
+        <div className="heroIndex" aria-hidden="true"><span>LC / Edit</span><span>Moda contemporânea</span></div>
+        <div className="heroHorizon" aria-hidden="true" />
+      </section>
+
+      <section className="categoryIntro shell" id="collection" data-reveal>
+        <div><p className="eyebrow">A coleção</p><h2>Quatro formas<br />de compor <em>presença.</em></h2></div>
+        <p>Do essencial ao detalhe final, cada escolha participa do mesmo visual: preciso, contemporâneo e fácil de vestir.</p>
+      </section>
+
+      <section className="categoryStory" aria-label="Categorias da coleção">
+        {categories.map((category, index) => (
+          <article className="categoryChapter" key={category.label}>
+            <div className={`categoryPanel theme-${category.theme}`} style={{ zIndex: index + 1 }}>
+              <div className="categoryContent shell">
+                <div className="categoryCopy" data-reveal>
+                  <div className="categoryLabel"><span>{category.number}</span><p>{category.label}</p></div>
+                  <h3>{category.title}</h3><p>{category.copy}</p>
+                  <a className="lineLink" href="#destaques">Ver seleção <Arrow /></a>
+                </div>
+                <div className="categoryMedia"><Image src={category.image} alt={category.alt} width={1792} height={1024} loading="lazy" sizes="(max-width: 680px) 100vw, 58vw" /></div>
+              </div>
+            </div>
+          </article>
+        ))}
+      </section>
+
+      <section className="manifesto" id="manifesto">
+        <div className="manifestoArc manifestoArcOne" aria-hidden="true" /><div className="manifestoArc manifestoArcTwo" aria-hidden="true" />
+        <div className="manifestoInner shell" data-reveal>
+          <p className="eyebrow">Manifesto</p><h2>Vestir com intenção.<br /><em>Menos ruído,</em><br />mais presença.</h2><p className="manifestoSignature">Lugano Clothing</p>
+        </div>
+      </section>
+
+      <section className="productsSection" id="destaques">
+        <div className="productsHead shell" data-reveal>
+          <div><p className="eyebrow">Seleção Lugano</p><h2>Peças que<br /><em>falam baixo.</em></h2></div>
+          <p>Consulte modelos e disponibilidade diretamente com a nossa equipe.</p>
+        </div>
+        <div className="productGrid shell">
+          {products.map((product, index) => (
+            <article className="productCard" key={product.name} data-reveal style={{ transitionDelay: `${(index % 3) * 70}ms` }}>
+              <a className="productMedia" href={whatsappUrl(`Olá! Quero saber mais sobre ${product.name} da Lugano Clothing.`)} target="_blank" rel="noreferrer" aria-label={`Consultar ${product.name} pelo WhatsApp`}>
+                <Image src={product.image} alt={product.name} width={1200} height={1200} loading="lazy" sizes="(max-width: 680px) 100vw, (max-width: 1020px) 50vw, 33vw" /><span className="productQuick">Consultar <Arrow /></span>
+              </a>
+              <div className="productMeta">
+                <div><h3>{product.name}</h3><p>{product.line}</p></div>
+                <a href={whatsappUrl(`Olá! Quero saber mais sobre ${product.name} da Lugano Clothing.`)} target="_blank" rel="noreferrer" aria-label={`Falar sobre ${product.name} no WhatsApp`}><Arrow /></a>
+              </div>
             </article>
           ))}
         </div>
       </section>
 
-      <section className="editorial shell">
-        <div className="editorialImage"><img src="/hero-lugano-v2.png" alt="Ambition Collection da Lugano com moletom liso" /></div>
-        <div className="editorialCopy"><p className="overline">The Ambition Edit</p><h2>Feito para quem<br />não chegou até aqui<br />por acaso.</h2><p>Um guarda-roupa preciso para dias que pedem presença. Do primeiro compromisso ao último plano da noite.</p><a className="primary dark" href="#collection">Conhecer o drop</a></div>
-      </section>
-
-      <section className="craft shell">
-        <div className="craftIntro"><p className="overline">Construído para durar</p><h2>Qualidade que você<br />percebe de perto.</h2></div>
-        <div className="craftGrid">
-          <article><span>01</span><div><h3>Algodão de alta gramatura</h3><p>Toque encorpado, macio e resistente. Mantém a estrutura mesmo depois de muitos usos.</p></div></article>
-          <article><span>02</span><div><h3>Caimento estudado</h3><p>Proporções equilibradas para vestir bem sem limitar seus movimentos.</p></div></article>
-          <article><span>03</span><div><h3>Acabamento preciso</h3><p>Costuras reforçadas e detalhes pensados para atravessar temporadas.</p></div></article>
-          <article><span>04</span><div><h3>Produção consciente</h3><p>Menos excessos, escolhas melhores e peças que permanecem relevantes.</p></div></article>
+      <section className="editorialSection">
+        <div className="editorialHeading shell" data-reveal><p className="eyebrow">Lugano, todos os dias</p><h2>Uma coleção.<br /><em>Seu ritmo.</em></h2></div>
+        <div className="editorialGrid shell">
+          <figure className="editorialMain" data-reveal><Image src="/collection/lugano-star-tees.png" alt="Camisetas Star da Lugano Clothing" width={1536} height={1024} loading="lazy" sizes="(max-width: 1020px) 100vw, 66vw" /><figcaption><span>01</span> Star Series</figcaption></figure>
+          <div className="editorialSide">
+            <figure data-reveal><Image src="/collection/lugano-bone-algodao.png" alt="Boné Lugano Clothing" width={1536} height={1024} loading="lazy" sizes="(max-width: 680px) 100vw, (max-width: 1020px) 50vw, 34vw" /><figcaption><span>02</span> Club Cap</figcaption></figure>
+            <figure data-reveal><Image src="/collection/lugano-oculos.png" alt="Óculos Riviera da Lugano Clothing" width={1536} height={1024} loading="lazy" sizes="(max-width: 680px) 100vw, (max-width: 1020px) 50vw, 34vw" /><figcaption><span>03</span> Riviera</figcaption></figure>
+          </div>
         </div>
       </section>
 
-      <section className="lookbook">
-        <div className="lookbookCopy shell"><p className="overline">Lugano, todos os dias</p><h2>Uma coleção.<br />Infinitas versões.</h2><p>Do essencial ao detalhe final, cada peça foi desenhada para combinar com o que você já conquistou — e com o que ainda vem pela frente.</p><a className="primary" href="#collection">Montar meu look</a></div>
-        <div className="lookbookImages shell">
-          <div><img src="/collection/lugano-star-hoodies.png" alt="Moletons Star da Lugano em três cores" /></div>
-          <div><img src="/collection/lugano-bone-algodao.png" alt="Boné Lugano em algodão" /></div>
-          <div><img src="/collection/lugano-pulseiras.png" alt="Pulseiras Lugano" /></div>
-        </div>
+      <section className="buyingSection shell" id="como-comprar">
+        <div className="buyingIntro" data-reveal><p className="eyebrow">Compra direta</p><h2>Simples do início<br /><em>ao fechamento.</em></h2></div>
+        <ol className="buyingSteps">
+          <li data-reveal><span>01</span><div><h3>Escolha sua peça</h3><p>Navegue pela coleção e encontre o modelo que combina com você.</p></div></li>
+          <li data-reveal><span>02</span><div><h3>Chame no WhatsApp</h3><p>O produto escolhido já vai identificado na mensagem.</p></div></li>
+          <li data-reveal><span>03</span><div><h3>Confirme os detalhes</h3><p>Nossa equipe confirma tamanho, disponibilidade, frete e pagamento.</p></div></li>
+        </ol>
       </section>
 
-      <section className="club" id="club">
-        <div className="clubInner shell">
-          <p className="overline">Acesso antecipado · Edições limitadas</p>
-          <h2>Você vai querer<br />saber <span>primeiro.</span></h2>
-          <p>Entre para o Lugano Club e tenha acesso ao que vem antes de todo mundo.</p>
-          {subscribed ? (
-            <div className="success" role="status"><span>✓</span><div><b>Você está na lista.</b><p>As novidades da Lugano chegarão primeiro para você.</p></div></div>
-          ) : (
-            <form onSubmit={(event) => { event.preventDefault(); setSubscribed(true); }}>
-              <label><span className="srOnly">Seu melhor e-mail</span><input type="email" name="email" autoComplete="email" placeholder="Seu melhor e-mail" required /><button type="submit">Entrar para o Club <Arrow /></button></label>
-            </form>
-          )}
-        </div>
+      <section className="closingCta" id="club">
+        <div className="closingHorizon" aria-hidden="true" />
+        <div className="closingInner shell" data-reveal><p className="eyebrow">Atendimento Lugano</p><h2>Encontrou<br />a sua peça?</h2><p>Fale com a gente para confirmar os detalhes e concluir seu pedido.</p><a className="button buttonBrass" href={whatsappUrl("Olá! Quero fazer um pedido na Lugano Clothing.")} target="_blank" rel="noreferrer">Falar com a Lugano <Arrow /></a></div>
       </section>
 
-      <footer className="footer shell">
-        <div><a className="wordmark" href="#top">LUGANO</a><p>Clássicos contemporâneos<br />para uma vida em movimento.</p></div>
-        <div><b>Explore</b><a href="#collection">Coleção</a><a href="#philosophy">Essência</a><a href="#club">Lugano Club</a></div>
-        <div><b>Conecte-se</b><a href="https://instagram.com/lugano_coo" target="_blank" rel="noreferrer">Instagram</a><a href="https://wa.me/5561991541080" target="_blank" rel="noreferrer">Contato</a><a href="https://wa.me/5561991541080?text=Olá!%20Preciso%20de%20atendimento%20da%20Lugano." target="_blank" rel="noreferrer">Atendimento</a></div>
-        <small>© 2026 Lugano Clothing. Todos os direitos reservados.</small><small>São Paulo · Brasil</small>
+      <footer className="footer">
+        <div className="footerInner shell">
+          <div className="footerBrand"><a className="brandLockup" href="#top"><strong>LUGANO</strong><span>CLOTHING</span></a><p>Moda contemporânea com presença.</p></div>
+          <div className="footerLinks">
+            <div><b>Explore</b>{navItems.map((item) => <a key={item.href} href={item.href}>{item.label}</a>)}</div>
+            <div><b>Conecte-se</b><a href="https://instagram.com/lugano_coo" target="_blank" rel="noreferrer">Instagram</a><a href={whatsappUrl("Olá! Preciso de atendimento da Lugano Clothing.")} target="_blank" rel="noreferrer">WhatsApp</a></div>
+          </div>
+          <div className="footerBottom"><small>© 2026 Lugano Clothing. Todos os direitos reservados.</small><small>Moda contemporânea · Brasil</small></div>
+        </div>
       </footer>
     </main>
   );
