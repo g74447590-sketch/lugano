@@ -36,8 +36,8 @@ const categories = [
     label: "Bonés",
     title: "O detalhe que fecha o look.",
     copy: "Uma assinatura discreta para acompanhar todos os dias.",
-    image: "/collection/lugano-bone-algodao.png",
-    alt: "Boné Lugano Clothing em azul-marinho",
+    image: "/collection/lugano-club-cap-off-white-logo-correta.png",
+    alt: "Club Cap off-white da Lugano Clothing com monograma LC",
     theme: "sand",
   },
   {
@@ -62,7 +62,7 @@ const products = [
   { name: "Essential Tee Navy", line: "Essential · Azul-marinho", image: "/collection/lugano-essential-tee-navy.png" },
   { name: "Essential Tee Gray", line: "Essential · Cinza", image: "/collection/lugano-essential-tee-cinza.png" },
   { name: "Essential Tee Sage", line: "Essential · Verde-sálvia", image: "/collection/lugano-essential-tee-salvia.png" },
-  { name: "Club Cap", line: "Boné · Azul-marinho", image: "/collection/lugano-bone-tactel-v3-logo-correta.png" },
+  { name: "Club Cap Off-White", line: "Boné · Off-white", image: "/collection/lugano-club-cap-off-white-logo-correta.png" },
   { name: "Riviera", line: "Óculos · Azul-marinho", image: "/collection/lugano-oculos.png" },
 ];
 
@@ -71,7 +71,7 @@ function whatsappUrl(message: string) {
 }
 
 function Arrow({ down = false }: { down?: boolean }) {
-  return <span aria-hidden="true">{down ? "↓" : "↗"}</span>;
+  return <span className={`arrowMark${down ? " arrowMarkDown" : ""}`} aria-hidden="true" />;
 }
 
 export default function Home() {
@@ -159,7 +159,7 @@ export default function Home() {
         <dialog className="menuOverlay" id="mobile-menu" open aria-label="Menu" onKeyDown={trapMenuFocus}>
           <div className="menuTop shell">
             <span className="menuBrand">LUGANO <small>CLOTHING</small></span>
-            <button type="button" onClick={() => setMenuOpen(false)} aria-label="Fechar menu">Fechar <span aria-hidden="true">×</span></button>
+            <button type="button" onClick={() => setMenuOpen(false)} aria-label="Fechar menu">Fechar <span className="closeMark" aria-hidden="true" /></button>
           </div>
           <nav className="menuLinks shell" aria-label="Menu mobile">
             {navItems.map((item, index) => (
@@ -179,15 +179,16 @@ export default function Home() {
         <div className="heroMedia" aria-hidden="true"><Image src="/hero-lugano-v2.png" alt="" width={1792} height={937} priority sizes="100vw" /></div>
         <div className="heroVeil" />
         <div className="heroContent shell">
-          <p className="eyebrow">Lugano Clothing · Coleção atual</p>
-          <h1 id="hero-title">Presença<br /><em>sem excesso.</em></h1>
-          <p className="heroIntro">Peças para acompanhar o ritmo de todos os dias.</p>
+          <p className="heroEdition">LUGANO / 46°00′N</p>
+          <p className="eyebrow">Precisão alpina · Elegância italiana · Luz mediterrânea</p>
+          <h1 id="hero-title">Entre os Alpes<br /><em>e o mar.</em></h1>
+          <p className="heroIntro">Uma coleção construída com rigor suíço, presença italiana e a leveza luminosa do Mediterrâneo.</p>
           <div className="heroActions">
             <a className="button buttonLight" href="#collection">Ver coleção <Arrow down /></a>
             <a className="lineLink light" href={whatsappUrl("Olá! Quero conhecer a coleção da Lugano Clothing.")} target="_blank" rel="noreferrer">Falar com a Lugano <Arrow /></a>
           </div>
         </div>
-        <div className="heroIndex" aria-hidden="true"><span>LC / Edit</span><span>Moda contemporânea</span></div>
+        <div className="heroIndex" aria-hidden="true"><span>HELVETIA / ITALIA / AEGEAN</span><span>Edition 01 · 2026</span></div>
         <div className="heroHorizon" aria-hidden="true" />
       </section>
 
@@ -233,7 +234,7 @@ export default function Home() {
               </a>
               <div className="productMeta">
                 <div><h3>{product.name}</h3><p>{product.line}</p></div>
-                <a href={whatsappUrl(`Olá! Quero saber mais sobre ${product.name} da Lugano Clothing.`)} target="_blank" rel="noreferrer" aria-label={`Falar sobre ${product.name} no WhatsApp`}><Arrow /></a>
+                <a className="productContact" href={whatsappUrl(`Olá! Quero saber mais sobre ${product.name} da Lugano Clothing.`)} target="_blank" rel="noreferrer" aria-label={`Falar sobre ${product.name} no WhatsApp`}>Consultar</a>
               </div>
             </article>
           ))}
@@ -245,7 +246,7 @@ export default function Home() {
         <div className="editorialGrid shell">
           <figure className="editorialMain" data-reveal><Image src="/collection/lugano-star-tees.png" alt="Camisetas Star da Lugano Clothing" width={1536} height={1024} loading="lazy" sizes="(max-width: 1020px) 100vw, 66vw" /><figcaption><span>01</span> Star Series</figcaption></figure>
           <div className="editorialSide">
-            <figure data-reveal><Image src="/collection/lugano-bone-algodao.png" alt="Boné Lugano Clothing" width={1536} height={1024} loading="lazy" sizes="(max-width: 680px) 100vw, (max-width: 1020px) 50vw, 34vw" /><figcaption><span>02</span> Club Cap</figcaption></figure>
+            <figure data-reveal><Image src="/collection/lugano-club-cap-off-white-logo-correta.png" alt="Club Cap off-white da Lugano Clothing com monograma LC" width={1536} height={1024} loading="lazy" sizes="(max-width: 680px) 100vw, (max-width: 1020px) 50vw, 34vw" /><figcaption><span>02</span> Club Cap Off-White</figcaption></figure>
             <figure data-reveal><Image src="/collection/lugano-oculos.png" alt="Óculos Riviera da Lugano Clothing" width={1536} height={1024} loading="lazy" sizes="(max-width: 680px) 100vw, (max-width: 1020px) 50vw, 34vw" /><figcaption><span>03</span> Riviera</figcaption></figure>
           </div>
         </div>
