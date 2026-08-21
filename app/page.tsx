@@ -52,16 +52,16 @@ const categories = [
 ];
 
 const products = [
-  { name: "Star Hoodie Black", line: "Moletom · Preto", image: "/collection/lugano-star-hoodie-preto.png" },
-  { name: "Star Hoodie White", line: "Moletom · Branco", image: "/collection/lugano-star-hoodie-branco.png" },
-  { name: "Star Hoodie Off-White", line: "Moletom · Off-white", image: "/collection/lugano-star-hoodie-off-white.png" },
-  { name: "Star Drop Black", line: "Camiseta · Preto", image: "/collection/lugano-star-tee-preta.png" },
-  { name: "Star Drop White", line: "Camiseta · Branco", image: "/collection/lugano-star-tee-branca.png" },
-  { name: "Star Drop Off-White", line: "Camiseta · Off-white", image: "/collection/lugano-star-tee-off-white.png" },
-  { name: "Essential Tee Off-White", line: "Essential · Off-white", image: "/collection/lugano-essential-tee-off-white.png" },
-  { name: "Essential Tee Navy", line: "Essential · Azul-marinho", image: "/collection/lugano-essential-tee-navy.png" },
-  { name: "Essential Tee Gray", line: "Essential · Cinza", image: "/collection/lugano-essential-tee-cinza.png" },
-  { name: "Essential Tee Sage", line: "Essential · Verde-sálvia", image: "/collection/lugano-essential-tee-salvia.png" },
+  { name: "Star Hoodie Black", line: "Moletom · Preto", price: "R$ 188", image: "/collection/lugano-star-hoodie-preto.png" },
+  { name: "Star Hoodie White", line: "Moletom · Branco", price: "R$ 188", image: "/collection/lugano-star-hoodie-branco.png" },
+  { name: "Star Hoodie Off-White", line: "Moletom · Off-white", price: "R$ 188", image: "/collection/lugano-star-hoodie-off-white.png" },
+  { name: "Star Drop Black", line: "Camiseta · Preto", price: "R$ 96", image: "/collection/lugano-star-tee-preta.png" },
+  { name: "Star Drop White", line: "Camiseta · Branco", price: "R$ 96", image: "/collection/lugano-star-tee-branca.png" },
+  { name: "Star Drop Off-White", line: "Camiseta · Off-white", price: "R$ 96", image: "/collection/lugano-star-tee-off-white.png" },
+  { name: "Essential Tee Off-White", line: "Essential · Off-white", price: "R$ 45", image: "/collection/lugano-essential-tee-off-white.png" },
+  { name: "Essential Tee Navy", line: "Essential · Azul-marinho", price: "R$ 45", image: "/collection/lugano-essential-tee-navy.png" },
+  { name: "Essential Tee Gray", line: "Essential · Cinza", price: "R$ 45", image: "/collection/lugano-essential-tee-cinza.png" },
+  { name: "Essential Tee Sage", line: "Essential · Verde-sálvia", price: "R$ 45", image: "/collection/lugano-essential-tee-salvia.png" },
   { name: "Club Cap Off-White", line: "Boné · Off-white", image: "/collection/lugano-club-cap-off-white-logo-correta.png" },
   { name: "Riviera", line: "Óculos · Azul-marinho", image: "/collection/lugano-oculos.png" },
 ];
@@ -233,7 +233,7 @@ export default function Home() {
                 <Image src={product.image} alt={product.name} width={1200} height={1200} loading="lazy" sizes="(max-width: 680px) 100vw, (max-width: 1020px) 50vw, 33vw" /><span className="productQuick">Consultar <Arrow /></span>
               </a>
               <div className="productMeta">
-                <div><h3>{product.name}</h3><p>{product.line}</p></div>
+                <div><h3>{product.name}</h3><p className="productLine">{product.line}</p>{product.price && <p className="productPrice">{product.price}</p>}</div>
                 <a className="productContact" href={whatsappUrl(`Olá! Quero saber mais sobre ${product.name} da Lugano Clothing.`)} target="_blank" rel="noreferrer" aria-label={`Falar sobre ${product.name} no WhatsApp`}>Consultar</a>
               </div>
             </article>

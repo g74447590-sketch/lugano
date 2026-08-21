@@ -154,7 +154,9 @@ em { font-family: var(--font-editorial), Georgia, serif; font-style: italic; fon
 .productCard:hover .productQuick { transform: none; }
 .productMeta { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; padding: 19px 2px 42px; border-bottom: 1px solid var(--line-dark); }
 .productMeta h3 { margin: 0 0 6px; font-size: 14px; font-weight: 700; letter-spacing: -.02em; }
-.productMeta p { margin: 0; color: rgba(11,21,32,.52); font-size: 10px; }
+.productMeta p { margin: 0; }
+.productLine { color: rgba(11,21,32,.52); font-size: 10px; }
+.productPrice { margin-top: 12px !important; font-family: var(--font-editorial), Georgia, serif; font-size: 20px; line-height: 1; letter-spacing: -.025em; }
 .productContact { display: inline-flex; align-items: center; width: auto; min-height: 34px; padding: 0 13px; border: 1px solid var(--line-dark); font-size: 8px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; transition: color .3s, background .3s; }
 .productContact:hover { color: var(--stone); background: var(--ink); }
 

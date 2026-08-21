@@ -50,7 +50,10 @@ test("keeps the storefront truthful, accessible, and deployable", async () => {
   assert.match(page, /aria-modal="true"|<dialog/);
   assert.match(page, /prefers-reduced-motion/);
   assert.doesNotMatch(page, /Carrinho|Favoritos|Chocolate Lugano/i);
-  assert.doesNotMatch(page, /R\$\s*\d/);
+  assert.match(page, /price: "R\$ 96"/);
+  assert.match(page, /price: "R\$ 45"/);
+  assert.match(page, /price: "R\$ 188"/);
+  assert.doesNotMatch(page, /R\$\s*(?:63,90|29,90|125,00)/);
 
   assert.match(layout, /Lugano Clothing — Presença sem excesso/);
   assert.match(layout, /metadataBase/);
