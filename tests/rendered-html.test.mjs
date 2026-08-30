@@ -51,7 +51,7 @@ test("keeps the storefront truthful, accessible, and deployable", async () => {
   assert.match(page, /prefers-reduced-motion/);
   assert.doesNotMatch(page, /Carrinho|Favoritos|Chocolate Lugano/i);
   assert.match(page, /price: "R\$ 96"/);
-  assert.match(page, /price: "R\$ 45"/);
+  assert.match(page, /price: "R\$ 59"/);
   assert.match(page, /price: "R\$ 188"/);
   assert.doesNotMatch(page, /R\$\s*(?:63,90|29,90|125,00)/);
 

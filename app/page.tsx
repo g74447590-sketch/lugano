@@ -36,8 +36,8 @@ const categories = [
     label: "Bonés",
     title: "O detalhe que fecha o look.",
     copy: "Uma assinatura discreta para acompanhar todos os dias.",
-    image: "/collection/lugano-club-cap-off-white-logo-correta.png",
-    alt: "Club Cap off-white da Lugano Clothing com monograma LC",
+    image: "/collection/lugano-club-cap-off-white-lc-only.png",
+    alt: "Club Cap off-white da Lugano Clothing apenas com o monograma LC",
     theme: "sand",
   },
   {
@@ -58,11 +58,11 @@ const products = [
   { name: "Star Drop Black", line: "Camiseta · Preto", price: "R$ 96", image: "/collection/lugano-star-tee-preta.png" },
   { name: "Star Drop White", line: "Camiseta · Branco", price: "R$ 96", image: "/collection/lugano-star-tee-branca.png" },
   { name: "Star Drop Off-White", line: "Camiseta · Off-white", price: "R$ 96", image: "/collection/lugano-star-tee-off-white.png" },
-  { name: "Essential Tee Off-White", line: "Essential · Off-white", price: "R$ 45", image: "/collection/lugano-essential-tee-off-white.png" },
-  { name: "Essential Tee Navy", line: "Essential · Azul-marinho", price: "R$ 45", image: "/collection/lugano-essential-tee-navy.png" },
-  { name: "Essential Tee Gray", line: "Essential · Cinza", price: "R$ 45", image: "/collection/lugano-essential-tee-cinza.png" },
-  { name: "Essential Tee Sage", line: "Essential · Verde-sálvia", price: "R$ 45", image: "/collection/lugano-essential-tee-salvia.png" },
-  { name: "Club Cap Off-White", line: "Boné · Off-white", image: "/collection/lugano-club-cap-off-white-logo-correta.png" },
+  { name: "Essential Tee Off-White", line: "Essential · Off-white", price: "R$ 59", image: "/collection/lugano-essential-tee-off-white.png" },
+  { name: "Essential Tee Navy", line: "Essential · Azul-marinho", price: "R$ 59", image: "/collection/lugano-essential-tee-navy.png" },
+  { name: "Essential Tee Gray", line: "Essential · Cinza", price: "R$ 59", image: "/collection/lugano-essential-tee-cinza.png" },
+  { name: "Essential Tee Sage", line: "Essential · Verde-sálvia", price: "R$ 59", image: "/collection/lugano-essential-tee-salvia.png" },
+  { name: "Club Cap Off-White", line: "Boné · Off-white", image: "/collection/lugano-club-cap-off-white-lc-only.png" },
   { name: "Riviera", line: "Óculos · Azul-marinho", image: "/collection/lugano-oculos.png" },
 ];
 
@@ -246,7 +246,7 @@ export default function Home() {
         <div className="editorialGrid shell">
           <figure className="editorialMain" data-reveal><Image src="/collection/lugano-star-tees.png" alt="Camisetas Star da Lugano Clothing" width={1536} height={1024} loading="lazy" sizes="(max-width: 1020px) 100vw, 66vw" /><figcaption><span>01</span> Star Series</figcaption></figure>
           <div className="editorialSide">
-            <figure data-reveal><Image src="/collection/lugano-club-cap-off-white-logo-correta.png" alt="Club Cap off-white da Lugano Clothing com monograma LC" width={1536} height={1024} loading="lazy" sizes="(max-width: 680px) 100vw, (max-width: 1020px) 50vw, 34vw" /><figcaption><span>02</span> Club Cap Off-White</figcaption></figure>
+            <figure data-reveal><Image src="/collection/lugano-club-cap-off-white-lc-only.png" alt="Club Cap off-white da Lugano Clothing apenas com o monograma LC" width={1536} height={1024} loading="lazy" sizes="(max-width: 680px) 100vw, (max-width: 1020px) 50vw, 34vw" /><figcaption><span>02</span> Club Cap Off-White</figcaption></figure>
             <figure data-reveal><Image src="/collection/lugano-oculos.png" alt="Óculos Riviera da Lugano Clothing" width={1536} height={1024} loading="lazy" sizes="(max-width: 680px) 100vw, (max-width: 1020px) 50vw, 34vw" /><figcaption><span>03</span> Riviera</figcaption></figure>
           </div>
         </div>
