@@ -39,8 +39,9 @@ test("server-renders the Lugano Clothing homepage", async () => {
 });
 
 test("keeps the storefront truthful, accessible, and deployable", async () => {
-  const [page, layout, css, hosting] = await Promise.all([
+  const [page, catalog, layout, css, hosting] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/catalog.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
     readFile(new URL("../.openai/hosting.json", import.meta.url), "utf8"),
@@ -49,15 +50,18 @@ test("keeps the storefront truthful, accessible, and deployable", async () => {
   assert.match(page, /const WHATSAPP_NUMBER = "5561991541080"/);
   assert.match(page, /aria-modal="true"|<dialog/);
   assert.match(page, /prefers-reduced-motion/);
-  assert.doesNotMatch(page, /Carrinho|Favoritos|Chocolate Lugano/i);
-  assert.match(page, /price: "R\$ 96"/);
-  assert.match(page, /price: "R\$ 59"/);
-  assert.match(page, /price: "R\$ 188"/);
-  assert.doesNotMatch(page, /R\$\s*(?:63,90|29,90|125,00)/);
+  assert.match(page, /Continuar pedido/);
+  assert.match(page, /Solicitar pedido/);
+  assert.doesNotMatch(page, /Favoritos|Chocolate Lugano/i);
+  assert.match(catalog, /price: "R\$ 96"/);
+  assert.match(catalog, /price: "R\$ 59"/);
+  assert.match(catalog, /price: "R\$ 188"/);
+  assert.doesNotMatch(catalog, /R\$\s*(?:63,90|29,90|125,00)/);
 
   assert.match(layout, /Lugano Clothing — Presença sem excesso/);
   assert.match(layout, /metadataBase/);
   assert.match(css, /@media \(prefers-reduced-motion: reduce\)/);
   assert.match(css, /\.menuOverlay/);
   assert.match(hosting, /appgprj_6a84a122a06881919a1fe2bbd371c407/);
+  assert.match(hosting, /"d1"\s*:\s*"DB"/);
 });

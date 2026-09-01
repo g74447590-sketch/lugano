@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import Image from "next/image";
+import { catalogProducts as products, formatMoney, type CatalogProduct } from "./catalog";
 
 const WHATSAPP_NUMBER = "5561991541080";
 
@@ -51,21 +52,6 @@ const categories = [
   },
 ];
 
-const products = [
-  { name: "Star Hoodie Black", line: "Moletom · Preto", price: "R$ 188", image: "/collection/lugano-star-hoodie-preto.png" },
-  { name: "Star Hoodie White", line: "Moletom · Branco", price: "R$ 188", image: "/collection/lugano-star-hoodie-branco.png" },
-  { name: "Star Hoodie Off-White", line: "Moletom · Off-white", price: "R$ 188", image: "/collection/lugano-star-hoodie-off-white.png" },
-  { name: "Star Drop Black", line: "Camiseta · Preto", price: "R$ 96", image: "/collection/lugano-star-tee-preta.png" },
-  { name: "Star Drop White", line: "Camiseta · Branco", price: "R$ 96", image: "/collection/lugano-star-tee-branca.png" },
-  { name: "Star Drop Off-White", line: "Camiseta · Off-white", price: "R$ 96", image: "/collection/lugano-star-tee-off-white.png" },
-  { name: "Essential Tee Off-White", line: "Essential · Off-white", price: "R$ 59", image: "/collection/lugano-essential-tee-off-white.png" },
-  { name: "Essential Tee Navy", line: "Essential · Azul-marinho", price: "R$ 59", image: "/collection/lugano-essential-tee-navy.png" },
-  { name: "Essential Tee Gray", line: "Essential · Cinza", price: "R$ 59", image: "/collection/lugano-essential-tee-cinza.png" },
-  { name: "Essential Tee Sage", line: "Essential · Verde-sálvia", price: "R$ 59", image: "/collection/lugano-essential-tee-salvia.png" },
-  { name: "Club Cap Off-White", line: "Boné · Off-white", image: "/collection/lugano-club-cap-off-white-lc-only.png" },
-  { name: "Riviera", line: "Óculos · Azul-marinho", image: "/collection/lugano-oculos.png" },
-];
-
 function whatsappUrl(message: string) {
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
 }
@@ -76,7 +62,42 @@ function Arrow({ down = false }: { down?: boolean }) {
 
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
+  const [cart, setCart] = useState<Array<{ product: CatalogProduct; size: string; quantity: number }>>([]);
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [checkoutError, setCheckoutError] = useState("");
   const firstMenuLink = useRef<HTMLAnchorElement>(null);
+
+  const addToCart = (product: CatalogProduct) => {
+    if (!product.priceCents) return;
+    setCart((current) => {
+      const match = current.find((item) => item.product.id === product.id && item.size === "M");
+      return match
+        ? current.map((item) => item === match ? { ...item, quantity: item.quantity + 1 } : item)
+        : [...current, { product, size: "M", quantity: 1 }];
+    });
+    setCartOpen(true);
+  };
+
+  const subtotal = cart.reduce((sum, item) => sum + (item.product.priceCents ?? 0) * item.quantity, 0);
+
+  const submitOrder = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setSubmitting(true);
+    setCheckoutError("");
+    const form = new FormData(event.currentTarget);
+    const payload = Object.fromEntries(form.entries());
+    try {
+      const response = await fetch("/api/orders", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ ...payload, items: cart.map((item) => ({ productId: item.product.id, size: item.size, quantity: item.quantity })) }) });
+      const result = await response.json() as { error?: string; url?: string };
+      if (!response.ok || !result.url) throw new Error(result.error || "Não foi possível criar o pedido.");
+      window.location.assign(result.url);
+    } catch (error) {
+      setCheckoutError(error instanceof Error ? error.message : "Não foi possível criar o pedido.");
+      setSubmitting(false);
+    }
+  };
 
   useEffect(() => {
     const elements = Array.from(document.querySelectorAll<HTMLElement>("[data-reveal]"));
@@ -149,6 +170,7 @@ export default function Home() {
           <a className="headerContact" href={whatsappUrl("Olá! Quero conhecer a coleção da Lugano Clothing.")} target="_blank" rel="noreferrer">
             Atendimento <Arrow />
           </a>
+          <button className="cartButton" type="button" onClick={() => setCartOpen(true)} aria-label={`Abrir sacola com ${cart.length} itens`}>Sacola <span>{cart.reduce((sum, item) => sum + item.quantity, 0)}</span></button>
           <button className="menuToggle" type="button" aria-expanded={menuOpen} aria-controls="mobile-menu" onClick={() => setMenuOpen(true)}>
             <span>Menu</span><i aria-hidden="true" />
           </button>
@@ -172,6 +194,49 @@ export default function Home() {
             <a href="https://instagram.com/lugano_coo" target="_blank" rel="noreferrer">Instagram <Arrow /></a>
             <a href={whatsappUrl("Olá! Preciso de atendimento da Lugano Clothing.")} target="_blank" rel="noreferrer">WhatsApp <Arrow /></a>
           </div>
+        </dialog>
+      )}
+
+      {cartOpen && (
+        <dialog className="cartOverlay" open aria-modal="true" aria-label="Sua sacola">
+          <button className="cartBackdrop" type="button" onClick={() => setCartOpen(false)} aria-label="Fechar sacola" />
+          <section className="cartPanel">
+            <header><div><small>Sua seleção</small><h2>Sacola</h2></div><button type="button" onClick={() => setCartOpen(false)} aria-label="Fechar sacola">Fechar</button></header>
+            {cart.length === 0 ? <div className="cartEmpty"><p>Sua sacola está vazia.</p><button type="button" onClick={() => setCartOpen(false)}>Explorar coleção</button></div> : (
+              <>
+                <div className="cartItems">{cart.map((item) => (
+                  <article key={`${item.product.id}-${item.size}`}>
+                    <Image src={item.product.image} alt="" width={104} height={124} />
+                    <div><h3>{item.product.name}</h3><label>Tamanho<select value={item.size} onChange={(event) => setCart((current) => current.map((entry) => entry === item ? { ...entry, size: event.target.value } : entry))}>{item.product.sizes?.map((size) => <option key={size}>{size}</option>)}</select></label><p>{item.quantity} × {item.product.price}</p></div>
+                    <button type="button" onClick={() => setCart((current) => current.filter((entry) => entry !== item))}>Remover</button>
+                  </article>
+                ))}</div>
+                <div className="cartSummary"><div><span>Subtotal</span><strong>{formatMoney(subtotal)}</strong></div><p>Frete e disponibilidade serão confirmados antes do pagamento.</p><button className="button buttonBrass" type="button" onClick={() => setCheckoutOpen(true)}>Continuar pedido</button></div>
+              </>
+            )}
+          </section>
+        </dialog>
+      )}
+
+      {checkoutOpen && (
+        <dialog className="checkoutOverlay" open aria-modal="true" aria-label="Dados do pedido">
+          <section className="checkoutPanel">
+            <header><div><small>Etapa 1 de 2</small><h2>Entrega</h2></div><button type="button" onClick={() => setCheckoutOpen(false)}>Voltar</button></header>
+            <form onSubmit={submitOrder}>
+              <div className="fieldGrid">
+                <label className="fieldWide">Nome completo<input name="customerName" autoComplete="name" required /></label>
+                <label>E-mail<input name="customerEmail" type="email" autoComplete="email" required /></label>
+                <label>WhatsApp<input name="customerPhone" inputMode="tel" autoComplete="tel" placeholder="(61) 99999-9999" required /></label>
+                <label>CEP<input name="postalCode" inputMode="numeric" autoComplete="postal-code" maxLength={9} required /></label>
+                <label>Estado<input name="state" autoComplete="address-level1" maxLength={2} placeholder="DF" required /></label>
+                <label className="fieldWide">Endereço completo<input name="addressLine" autoComplete="street-address" placeholder="Rua, número e complemento" required /></label>
+                <label className="fieldWide">Cidade<input name="city" autoComplete="address-level2" required /></label>
+              </div>
+              <div className="checkoutNotice"><strong>Você ainda não será cobrado.</strong><p>Vamos confirmar disponibilidade, frete e prazo antes de liberar o pagamento.</p></div>
+              {checkoutError && <p className="formError" role="alert">{checkoutError}</p>}
+              <button className="button buttonBrass" type="submit" disabled={submitting}>{submitting ? "Criando pedido…" : "Solicitar pedido"}</button>
+            </form>
+          </section>
         </dialog>
       )}
 
@@ -229,12 +294,12 @@ export default function Home() {
         <div className="productGrid shell">
           {products.map((product, index) => (
             <article className="productCard" key={product.name} data-reveal style={{ transitionDelay: `${(index % 3) * 70}ms` }}>
-              <a className="productMedia" href={whatsappUrl(`Olá! Quero saber mais sobre ${product.name} da Lugano Clothing.`)} target="_blank" rel="noreferrer" aria-label={`Consultar ${product.name} pelo WhatsApp`}>
-                <Image src={product.image} alt={product.name} width={1200} height={1200} loading="lazy" sizes="(max-width: 680px) 100vw, (max-width: 1020px) 50vw, 33vw" /><span className="productQuick">Consultar <Arrow /></span>
-              </a>
+              <button className="productMedia" type="button" onClick={() => product.priceCents ? addToCart(product) : undefined} aria-label={product.priceCents ? `Adicionar ${product.name} à sacola` : `Preço de ${product.name} ainda não confirmado`}>
+                <Image src={product.image} alt={product.name} width={1200} height={1200} loading="lazy" sizes="(max-width: 680px) 100vw, (max-width: 1020px) 50vw, 33vw" /><span className="productQuick">{product.priceCents ? "Adicionar" : "Consultar"} <Arrow /></span>
+              </button>
               <div className="productMeta">
                 <div><h3>{product.name}</h3><p className="productLine">{product.line}</p>{product.price && <p className="productPrice">{product.price}</p>}</div>
-                <a className="productContact" href={whatsappUrl(`Olá! Quero saber mais sobre ${product.name} da Lugano Clothing.`)} target="_blank" rel="noreferrer" aria-label={`Falar sobre ${product.name} no WhatsApp`}>Consultar</a>
+                {product.priceCents ? <button className="productContact" type="button" onClick={() => addToCart(product)}>Adicionar</button> : <a className="productContact" href={whatsappUrl(`Olá! Quero saber mais sobre ${product.name} da Lugano Clothing.`)} target="_blank" rel="noreferrer">Consultar</a>}
               </div>
             </article>
           ))}
