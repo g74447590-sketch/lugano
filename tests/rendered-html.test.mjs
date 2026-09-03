@@ -53,7 +53,9 @@ test("keeps the storefront truthful, accessible, and deployable", async () => {
   assert.match(page, /Continuar pedido/);
   assert.match(page, /Solicitar pedido/);
   assert.doesNotMatch(page, /Favoritos|Chocolate Lugano/i);
-  assert.match(catalog, /price: "R\$ 96"/);
+  assert.doesNotMatch(catalog, /Star Drop|price: "R\$ 96"/);
+  assert.match(catalog, /Club Cap Branco[\s\S]*price: "R\$ 75"/);
+  assert.match(catalog, /Club Cap Azul-Marinho[\s\S]*price: "R\$ 75"/);
   assert.match(catalog, /price: "R\$ 59"/);
   assert.match(catalog, /price: "R\$ 188"/);
   assert.doesNotMatch(catalog, /R\$\s*(?:63,90|29,90|125,00)/);

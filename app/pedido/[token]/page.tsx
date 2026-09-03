@@ -1,4 +1,5 @@
-import { and, asc, eq } from "drizzle-orm";
+import { asc, eq } from "drizzle-orm";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getDb } from "@/db";
 import { orderEvents, orderItems, orders } from "@/db/schema";
@@ -30,7 +31,7 @@ export default async function OrderPage({ params }: { params: Promise<{ token: s
   const quoteReady = order.status === "awaiting_payment" && order.totalCents != null;
 
   return <main className="orderPage">
-    <header><a href="/" className="orderBrand">LUGANO <span>CLOTHING</span></a><a href="/">Voltar à loja</a></header>
+    <header><Link href="/" className="orderBrand">LUGANO <span>CLOTHING</span></Link><Link href="/">Voltar à loja</Link></header>
     <section className="orderHero"><p>Pedido {order.code}</p><h1>{statusLabels[order.status] ?? order.status}</h1><span>Última atualização: {new Date(order.updatedAt).toLocaleString("pt-BR")}</span></section>
     <div className="orderGrid">
       <section className="orderCard"><h2>Resumo</h2>{items.map((item) => <article key={item.id}><div><strong>{item.productName}</strong><span>Tamanho {item.size} · Quantidade {item.quantity}</span></div><b>{formatMoney(item.unitPriceCents * item.quantity)}</b></article>)}<dl><div><dt>Subtotal</dt><dd>{formatMoney(order.subtotalCents)}</dd></div><div><dt>Frete</dt><dd>{order.shippingCents == null ? "Em cotação" : formatMoney(order.shippingCents)}</dd></div><div className="orderTotal"><dt>Total</dt><dd>{order.totalCents == null ? "A confirmar" : formatMoney(order.totalCents)}</dd></div></dl></section>

@@ -10,14 +10,12 @@ const productAppeals: Record<string, string> = {
   "star-hoodie-black": "O contraste mais marcante da coleção Star.",
   "star-hoodie-white": "Claro, direto e feito para ganhar o olhar.",
   "star-hoodie-off-white": "Um tom leve para uma presença bem definida.",
-  "star-drop-black": "A assinatura Star em sua versão mais intensa.",
-  "star-drop-white": "Base clara, assinatura presente e visual preciso.",
-  "star-drop-off-white": "A Star para composições mais suaves.",
   "essential-off-white": "Um essencial claro para repetir sem cansar.",
   "essential-navy": "Azul-marinho para sair do óbvio com discrição.",
   "essential-gray": "Cinza versátil, com a identidade LC no ponto certo.",
   "essential-sage": "A cor que renova a seleção Essential.",
-  "club-cap-off-white": "Monograma LC e presença sem excesso.",
+  "club-cap-white": "Monograma LC em uma escolha clara e discreta.",
+  "club-cap-navy": "Azul-marinho com a assinatura completa Lugano.",
   riviera: "Linhas marcantes para fechar o visual.",
 };
 
@@ -87,7 +85,8 @@ export default function Home() {
   const firstMenuLink = useRef<HTMLAnchorElement>(null);
 
   useEffect(() => {
-    setDarkMode(window.localStorage.getItem("lugano-theme") === "dark");
+    const frame = window.requestAnimationFrame(() => setDarkMode(window.localStorage.getItem("lugano-theme") === "dark"));
+    return () => window.cancelAnimationFrame(frame);
   }, []);
 
   const toggleTheme = () => {
@@ -315,11 +314,6 @@ export default function Home() {
             </article>
           ))}
         </div>
-      </section>
-
-      <section className="starFeature">
-        <div className="starFeatureImage"><Image src="/collection/lugano-star-tees.png" alt="Camisetas Star da Lugano Clothing" width={1536} height={1024} loading="lazy" sizes="(max-width: 800px) 100vw, 58vw" /></div>
-        <div className="starFeatureCopy" data-reveal><p className="eyebrow">Star Collection</p><h2>Uma assinatura.<br /><em>Três escolhas.</em></h2><p>Preto, branco ou off-white. A mesma presença, no seu tom.</p><a href="#destaques">Ver Star Drop <Arrow /></a></div>
       </section>
 
       <section className="buyingSection shell" id="como-comprar">
