@@ -6,6 +6,21 @@ import { catalogProducts as products, formatMoney, type CatalogProduct } from ".
 
 const WHATSAPP_NUMBER = "5561991541080";
 
+const productAppeals: Record<string, string> = {
+  "star-hoodie-black": "O contraste mais marcante da coleção Star.",
+  "star-hoodie-white": "Claro, direto e feito para ganhar o olhar.",
+  "star-hoodie-off-white": "Um tom leve para uma presença bem definida.",
+  "star-drop-black": "A assinatura Star em sua versão mais intensa.",
+  "star-drop-white": "Base clara, assinatura presente e visual preciso.",
+  "star-drop-off-white": "A Star para composições mais suaves.",
+  "essential-off-white": "Um essencial claro para repetir sem cansar.",
+  "essential-navy": "Azul-marinho para sair do óbvio com discrição.",
+  "essential-gray": "Cinza versátil, com a identidade LC no ponto certo.",
+  "essential-sage": "A cor que renova a seleção Essential.",
+  "club-cap-off-white": "Monograma LC e presença sem excesso.",
+  riviera: "Linhas marcantes para fechar o visual.",
+};
+
 const navItems = [
   { label: "Coleção", href: "#collection" },
   { label: "Manifesto", href: "#manifesto" },
@@ -61,21 +76,35 @@ function Arrow({ down = false }: { down?: boolean }) {
 }
 
 export default function Home() {
+  const [darkMode, setDarkMode] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
   const [cart, setCart] = useState<Array<{ product: CatalogProduct; size: string; quantity: number }>>([]);
+  const [selectedSizes, setSelectedSizes] = useState<Record<string, string>>({});
   const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [checkoutError, setCheckoutError] = useState("");
   const firstMenuLink = useRef<HTMLAnchorElement>(null);
 
-  const addToCart = (product: CatalogProduct) => {
-    if (!product.priceCents) return;
+  useEffect(() => {
+    setDarkMode(window.localStorage.getItem("lugano-theme") === "dark");
+  }, []);
+
+  const toggleTheme = () => {
+    setDarkMode((current) => {
+      const next = !current;
+      window.localStorage.setItem("lugano-theme", next ? "dark" : "light");
+      return next;
+    });
+  };
+
+  const addToCart = (product: CatalogProduct, requestedSize?: string) => {
+    if (!product.priceCents || !requestedSize) return;
     setCart((current) => {
-      const match = current.find((item) => item.product.id === product.id && item.size === "M");
+      const match = current.find((item) => item.product.id === product.id && item.size === requestedSize);
       return match
         ? current.map((item) => item === match ? { ...item, quantity: item.quantity + 1 } : item)
-        : [...current, { product, size: "M", quantity: 1 }];
+        : [...current, { product, size: requestedSize, quantity: 1 }];
     });
     setCartOpen(true);
   };
@@ -158,7 +187,7 @@ export default function Home() {
   };
 
   return (
-    <main>
+    <main className={darkMode ? "darkTheme" : "lightTheme"}>
       <header className="siteHeader">
         <div className="nav shell">
           <a className="brandLockup" href="#top" aria-label="Lugano Clothing, página inicial">
@@ -171,6 +200,7 @@ export default function Home() {
             Atendimento <Arrow />
           </a>
           <button className="cartButton" type="button" onClick={() => setCartOpen(true)} aria-label={`Abrir sacola com ${cart.length} itens`}>Sacola <span>{cart.reduce((sum, item) => sum + item.quantity, 0)}</span></button>
+          <button className="themeToggle" type="button" onClick={toggleTheme} aria-label={darkMode ? "Ativar modo claro" : "Ativar modo escuro"} aria-pressed={darkMode}><span aria-hidden="true">{darkMode ? "☀" : "◐"}</span><b>{darkMode ? "Claro" : "Escuro"}</b></button>
           <button className="menuToggle" type="button" aria-expanded={menuOpen} aria-controls="mobile-menu" onClick={() => setMenuOpen(true)}>
             <span>Menu</span><i aria-hidden="true" />
           </button>
@@ -240,95 +270,69 @@ export default function Home() {
         </dialog>
       )}
 
-      <section className="hero" id="top" aria-labelledby="hero-title">
-        <div className="heroMedia" aria-hidden="true"><Image src="/hero-lugano-v2.png" alt="" width={1792} height={937} priority sizes="100vw" /></div>
-        <div className="heroVeil" />
-        <div className="heroContent shell">
-          <p className="heroEdition">LUGANO / 46°00′N</p>
-          <p className="eyebrow">Precisão alpina · Elegância italiana · Luz mediterrânea</p>
-          <h1 id="hero-title">Entre os Alpes<br /><em>e o mar.</em></h1>
-          <p className="heroIntro">Uma coleção construída com rigor suíço, presença italiana e a leveza luminosa do Mediterrâneo.</p>
-          <div className="heroActions">
-            <a className="button buttonLight" href="#collection">Ver coleção <Arrow down /></a>
-            <a className="lineLink light" href={whatsappUrl("Olá! Quero conhecer a coleção da Lugano Clothing.")} target="_blank" rel="noreferrer">Falar com a Lugano <Arrow /></a>
-          </div>
-        </div>
-        <div className="heroIndex" aria-hidden="true"><span>HELVETIA / ITALIA / AEGEAN</span><span>Edition 01 · 2026</span></div>
-        <div className="heroHorizon" aria-hidden="true" />
-      </section>
-
-      <section className="categoryIntro shell" id="collection" data-reveal>
-        <div><p className="eyebrow">A coleção</p><h2>Quatro formas<br />de compor <em>presença.</em></h2></div>
-        <p>Do essencial ao detalhe final, cada escolha participa do mesmo visual: preciso, contemporâneo e fácil de vestir.</p>
-      </section>
-
-      <section className="categoryStory" aria-label="Categorias da coleção">
-        {categories.map((category, index) => (
-          <article className="categoryChapter" key={category.label}>
-            <div className={`categoryPanel theme-${category.theme}`} style={{ zIndex: index + 1 }}>
-              <div className="categoryContent shell">
-                <div className="categoryCopy" data-reveal>
-                  <div className="categoryLabel"><span>{category.number}</span><p>{category.label}</p></div>
-                  <h3>{category.title}</h3><p>{category.copy}</p>
-                  <a className="lineLink" href="#destaques">Ver seleção <Arrow /></a>
-                </div>
-                <div className="categoryMedia"><Image src={category.image} alt={category.alt} width={1792} height={1024} loading="lazy" sizes="(max-width: 680px) 100vw, 58vw" /></div>
-              </div>
-            </div>
-          </article>
-        ))}
-      </section>
-
-      <section className="manifesto" id="manifesto">
-        <div className="manifestoArc manifestoArcOne" aria-hidden="true" /><div className="manifestoArc manifestoArcTwo" aria-hidden="true" />
-        <div className="manifestoInner shell" data-reveal>
-          <p className="eyebrow">Manifesto</p><h2>Vestir com intenção.<br /><em>Menos ruído,</em><br />mais presença.</h2><p className="manifestoSignature">Lugano Clothing</p>
+      <section className="storeHero" id="top" aria-labelledby="hero-title">
+        <div className="storeHeroVisual"><Image src="/hero-lugano-v2.png" alt="Seleção de moletons e camisetas Lugano Clothing" width={1792} height={937} priority sizes="(max-width: 760px) 100vw, 58vw" /><span>Coleção 01 · 2026</span></div>
+        <div className="storeHeroCopy">
+          <p className="eyebrow">Lugano Clothing</p>
+          <h1 id="hero-title">Vista o que<br /><em>fica na memória.</em></h1>
+          <p>Peças diretas, cores bem escolhidas e a assinatura LC para quem prefere presença a excesso.</p>
+          <div className="storeHeroActions"><a className="storePrimary" href="#destaques">Escolher minha peça</a><a className="storeSecondary" href={whatsappUrl("Olá! Quero ajuda para escolher uma peça da Lugano Clothing.")} target="_blank" rel="noreferrer">Quero ajuda <Arrow /></a></div>
         </div>
       </section>
+
+      <aside className="serviceBar" aria-label="Como funciona a compra"><span>01 · Escolha o tamanho</span><span>02 · Envie sua solicitação</span><span>03 · Receba a confirmação</span></aside>
+
+      <section className="categoryShelf shell" id="collection" aria-labelledby="category-title">
+        <header data-reveal><p className="eyebrow">Comece por aqui</p><h2 id="category-title">Qual é a sua escolha?</h2></header>
+        <div className="categoryCards">
+          {categories.map((category) => <a href="#destaques" className="categoryCard" key={category.label} data-reveal><Image src={category.image} alt={category.alt} width={700} height={700} loading="lazy" sizes="(max-width: 680px) 50vw, 25vw" /><span>{category.number}</span><div><h3>{category.label}</h3><p>{category.copy}</p></div></a>)}
+        </div>
+      </section>
+
+      <section className="humanNote" id="manifesto"><div className="shell" data-reveal><p>Uma marca para vestir de verdade.</p><blockquote>“A melhor peça não é a que chama mais atenção. É a que faz você querer usá-la de novo.”</blockquote><span>Lugano Clothing</span></div></section>
 
       <section className="productsSection" id="destaques">
         <div className="productsHead shell" data-reveal>
-          <div><p className="eyebrow">Seleção Lugano</p><h2>Peças que<br /><em>falam baixo.</em></h2></div>
-          <p>Consulte modelos e disponibilidade diretamente com a nossa equipe.</p>
+          <div><p className="eyebrow">Seleção Lugano</p><h2>Escolha a peça<br /><em>que fica com você.</em></h2></div>
+          <p>Veja as cores, escolha o tamanho e monte sua seleção. Antes de qualquer pagamento, nossa equipe confirma disponibilidade, frete e prazo.</p>
         </div>
         <div className="productGrid shell">
           {products.map((product, index) => (
             <article className="productCard" key={product.name} data-reveal style={{ transitionDelay: `${(index % 3) * 70}ms` }}>
-              <button className="productMedia" type="button" onClick={() => product.priceCents ? addToCart(product) : undefined} aria-label={product.priceCents ? `Adicionar ${product.name} à sacola` : `Preço de ${product.name} ainda não confirmado`}>
-                <Image src={product.image} alt={product.name} width={1200} height={1200} loading="lazy" sizes="(max-width: 680px) 100vw, (max-width: 1020px) 50vw, 33vw" /><span className="productQuick">{product.priceCents ? "Adicionar" : "Consultar"} <Arrow /></span>
-              </button>
+              <div className="productMedia">
+                <Image src={product.image} alt={product.name} width={1200} height={1200} loading="lazy" sizes="(max-width: 680px) 50vw, (max-width: 1020px) 50vw, 33vw" />
+                <span className="productQuick">{product.priceCents ? "Escolha Lugano" : "Sob consulta"}</span>
+              </div>
               <div className="productMeta">
-                <div><h3>{product.name}</h3><p className="productLine">{product.line}</p>{product.price && <p className="productPrice">{product.price}</p>}</div>
-                {product.priceCents ? <button className="productContact" type="button" onClick={() => addToCart(product)}>Adicionar</button> : <a className="productContact" href={whatsappUrl(`Olá! Quero saber mais sobre ${product.name} da Lugano Clothing.`)} target="_blank" rel="noreferrer">Consultar</a>}
+                <div className="productIdentity"><p className="productLine">{product.line}</p><h3>{product.name}</h3><p className="productAppeal">{productAppeals[product.id]}</p>{product.price && <p className="productPrice">{product.price}</p>}</div>
+                {product.priceCents && product.sizes ? (
+                  <div className="productChoice">
+                    <fieldset><legend>Escolha o tamanho</legend><div>{product.sizes.map((size) => <button className={selectedSizes[product.id] === size ? "is-selected" : ""} type="button" key={size} aria-pressed={selectedSizes[product.id] === size} onClick={() => setSelectedSizes((current) => ({ ...current, [product.id]: size }))}>{size}</button>)}</div></fieldset>
+                    <button className="productContact" type="button" disabled={!selectedSizes[product.id]} onClick={() => addToCart(product, selectedSizes[product.id])}>{selectedSizes[product.id] ? "Adicionar à sacola" : "Escolha um tamanho"}</button>
+                  </div>
+                ) : <a className="productContact" href={whatsappUrl(`Olá! Quero saber mais sobre ${product.name} da Lugano Clothing.`)} target="_blank" rel="noreferrer">Quero saber mais</a>}
               </div>
             </article>
           ))}
         </div>
       </section>
 
-      <section className="editorialSection">
-        <div className="editorialHeading shell" data-reveal><p className="eyebrow">Lugano, todos os dias</p><h2>Uma coleção.<br /><em>Seu ritmo.</em></h2></div>
-        <div className="editorialGrid shell">
-          <figure className="editorialMain" data-reveal><Image src="/collection/lugano-star-tees.png" alt="Camisetas Star da Lugano Clothing" width={1536} height={1024} loading="lazy" sizes="(max-width: 1020px) 100vw, 66vw" /><figcaption><span>01</span> Star Series</figcaption></figure>
-          <div className="editorialSide">
-            <figure data-reveal><Image src="/collection/lugano-club-cap-off-white-lc-only.png" alt="Club Cap off-white da Lugano Clothing apenas com o monograma LC" width={1536} height={1024} loading="lazy" sizes="(max-width: 680px) 100vw, (max-width: 1020px) 50vw, 34vw" /><figcaption><span>02</span> Club Cap Off-White</figcaption></figure>
-            <figure data-reveal><Image src="/collection/lugano-oculos.png" alt="Óculos Riviera da Lugano Clothing" width={1536} height={1024} loading="lazy" sizes="(max-width: 680px) 100vw, (max-width: 1020px) 50vw, 34vw" /><figcaption><span>03</span> Riviera</figcaption></figure>
-          </div>
-        </div>
+      <section className="starFeature">
+        <div className="starFeatureImage"><Image src="/collection/lugano-star-tees.png" alt="Camisetas Star da Lugano Clothing" width={1536} height={1024} loading="lazy" sizes="(max-width: 800px) 100vw, 58vw" /></div>
+        <div className="starFeatureCopy" data-reveal><p className="eyebrow">Star Collection</p><h2>Uma assinatura.<br /><em>Três escolhas.</em></h2><p>Preto, branco ou off-white. A mesma presença, no seu tom.</p><a href="#destaques">Ver Star Drop <Arrow /></a></div>
       </section>
 
       <section className="buyingSection shell" id="como-comprar">
-        <div className="buyingIntro" data-reveal><p className="eyebrow">Compra direta</p><h2>Simples do início<br /><em>ao fechamento.</em></h2></div>
+        <div className="buyingIntro" data-reveal><p className="eyebrow">Pedido acompanhado</p><h2>Você escolhe.<br /><em>A gente confirma.</em></h2></div>
         <ol className="buyingSteps">
-          <li data-reveal><span>01</span><div><h3>Escolha sua peça</h3><p>Navegue pela coleção e encontre o modelo que combina com você.</p></div></li>
-          <li data-reveal><span>02</span><div><h3>Chame no WhatsApp</h3><p>O produto escolhido já vai identificado na mensagem.</p></div></li>
-          <li data-reveal><span>03</span><div><h3>Confirme os detalhes</h3><p>Nossa equipe confirma tamanho, disponibilidade, frete e pagamento.</p></div></li>
+          <li data-reveal><span>01</span><div><h3>Escolha peça e tamanho</h3><p>Monte sua seleção com os modelos e cores que fazem sentido para você.</p></div></li>
+          <li data-reveal><span>02</span><div><h3>Envie sua solicitação</h3><p>Preencha os dados necessários para receber a confirmação do pedido.</p></div></li>
+          <li data-reveal><span>03</span><div><h3>Fale com uma pessoa</h3><p>Nossa equipe confirma disponibilidade, frete e prazo antes do pagamento.</p></div></li>
         </ol>
       </section>
 
       <section className="closingCta" id="club">
-        <div className="closingHorizon" aria-hidden="true" />
-        <div className="closingInner shell" data-reveal><p className="eyebrow">Atendimento Lugano</p><h2>Encontrou<br />a sua peça?</h2><p>Fale com a gente para confirmar os detalhes e concluir seu pedido.</p><a className="button buttonBrass" href={whatsappUrl("Olá! Quero fazer um pedido na Lugano Clothing.")} target="_blank" rel="noreferrer">Falar com a Lugano <Arrow /></a></div>
+        <div className="closingInner shell" data-reveal><p className="eyebrow">Ainda está escolhendo?</p><h2>Vamos encontrar<br /><em>a sua Lugano.</em></h2><p>Conte para a gente o que você procura. O atendimento é feito por uma pessoa.</p><a className="button buttonBrass" href={whatsappUrl("Olá! Quero ajuda para escolher minha peça da Lugano Clothing.")} target="_blank" rel="noreferrer">Conversar no WhatsApp <Arrow /></a></div>
       </section>
 
       <footer className="footer">
