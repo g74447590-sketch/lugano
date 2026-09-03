@@ -56,6 +56,9 @@ test("keeps the storefront truthful, accessible, and deployable", async () => {
   assert.doesNotMatch(catalog, /Star Drop|price: "R\$ 96"/);
   assert.match(catalog, /Club Cap Branco[\s\S]*price: "R\$ 75"/);
   assert.match(catalog, /Club Cap Azul-Marinho[\s\S]*price: "R\$ 75"/);
+  assert.match(catalog, /lugano-club-cap-navy-lc-only\.png/);
+  assert.match(catalog, /lugano-riviera-reference\.jpg/);
+  assert.doesNotMatch(catalog, /lugano-bone-tactel-v3-logo-correta\.png|lugano-oculos\.png/);
   assert.match(catalog, /price: "R\$ 59"/);
   assert.match(catalog, /price: "R\$ 188"/);
   assert.doesNotMatch(catalog, /R\$\s*(?:63,90|29,90|125,00)/);

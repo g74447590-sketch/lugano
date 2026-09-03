@@ -17,8 +17,8 @@ export const catalogProducts: readonly CatalogProduct[] = [
   { id: "essential-gray", name: "Essential Tee Gray", line: "Essential · Cinza", priceCents: 5900, price: "R$ 59", image: "/collection/lugano-essential-tee-cinza.png", sizes: ["P", "M", "G", "GG"] },
   { id: "essential-sage", name: "Essential Tee Sage", line: "Essential · Verde-sálvia", priceCents: 5900, price: "R$ 59", image: "/collection/lugano-essential-tee-salvia.png", sizes: ["P", "M", "G", "GG"] },
   { id: "club-cap-white", name: "Club Cap Branco", line: "Boné · Branco", priceCents: 7500, price: "R$ 75", image: "/collection/lugano-club-cap-off-white-lc-only.png" },
-  { id: "club-cap-navy", name: "Club Cap Azul-Marinho", line: "Boné · Azul-marinho", priceCents: 7500, price: "R$ 75", image: "/collection/lugano-bone-tactel-v3-logo-correta.png" },
-  { id: "riviera", name: "Riviera", line: "Óculos · Azul-marinho", image: "/collection/lugano-oculos.png" },
+  { id: "club-cap-navy", name: "Club Cap Azul-Marinho", line: "Boné · Azul-marinho", priceCents: 7500, price: "R$ 75", image: "/collection/lugano-club-cap-navy-lc-only.png" },
+  { id: "riviera", name: "Riviera", line: "Óculos · Preto", image: "/collection/lugano-riviera-reference.jpg" },
 ];
 
 export function formatMoney(cents: number) {

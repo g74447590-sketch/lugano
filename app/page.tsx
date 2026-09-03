@@ -15,7 +15,7 @@ const productAppeals: Record<string, string> = {
   "essential-gray": "Cinza versátil, com a identidade LC no ponto certo.",
   "essential-sage": "A cor que renova a seleção Essential.",
   "club-cap-white": "Monograma LC em uma escolha clara e discreta.",
-  "club-cap-navy": "Azul-marinho com a assinatura completa Lugano.",
+  "club-cap-navy": "Azul-marinho com o monograma LC em destaque.",
   riviera: "Linhas marcantes para fechar o visual.",
 };
 
@@ -59,8 +59,8 @@ const categories = [
     label: "Óculos",
     title: "Linhas marcantes, sem excesso.",
     copy: "Riviera: linhas limpas e presença imediata.",
-    image: "/collection/lugano-oculos.png",
-    alt: "Óculos Riviera da Lugano Clothing",
+    image: "/collection/lugano-riviera-reference.jpg",
+    alt: "Óculos Riviera pretos com lentes escuras",
     theme: "night",
   },
 ];
