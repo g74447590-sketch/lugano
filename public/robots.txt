@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+
+Sitemap: https://lugano-clothing.g74447590.workers.dev/sitemap.xml

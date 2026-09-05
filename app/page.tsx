@@ -2,21 +2,19 @@
 
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import Image from "next/image";
+import StoreImage from "./StoreImage";
 import { catalogProducts as products, formatMoney, type CatalogProduct } from "./catalog";
 
 const WHATSAPP_NUMBER = "5561991541080";
 
 const productAppeals: Record<string, string> = {
-  "star-hoodie-black": "O contraste mais marcante da coleção Star.",
-  "star-hoodie-white": "Claro, direto e feito para ganhar o olhar.",
-  "star-hoodie-off-white": "Um tom leve para uma presença bem definida.",
-  "essential-off-white": "Um essencial claro para repetir sem cansar.",
-  "essential-navy": "Azul-marinho para sair do óbvio com discrição.",
-  "essential-gray": "Cinza versátil, com a identidade LC no ponto certo.",
-  "essential-sage": "A cor que renova a seleção Essential.",
+  "cursivo-white": "Branco com a assinatura Lugano em cursivo azul-marinho.",
+  "tutto-passa-navy": "Tutto passa em cursivo branco sobre azul-marinho.",
+  "cursivo-black": "Preto com a assinatura Lugano em cursivo branco.",
+  "cursivo-navy": "Azul-escuro com a assinatura Lugano em cursivo branco.",
+  "monaco-navy": "Monte-Carlo, monograma LC e a assinatura Lugano.",
   "club-cap-white": "Monograma LC em uma escolha clara e discreta.",
   "club-cap-navy": "Azul-marinho com o monograma LC em destaque.",
-  riviera: "Linhas marcantes para fechar o visual.",
 };
 
 const navItems = [
@@ -29,39 +27,28 @@ const navItems = [
 const categories = [
   {
     number: "01",
-    label: "Camisetas",
-    title: "Essenciais com identidade.",
-    copy: "Bases limpas, tons pensados e a assinatura LC.",
-    image: "/collection/lugano-camisetas-basicas-lc-v2.png",
-    alt: "Camisetas Lugano Clothing em quatro cores",
+    label: "Monaco",
+    copy: "Uma nova assinatura em azul-marinho.",
+    image: "/collection/lugano-monaco-navy-bordado.png",
+    alt: "Boné Monaco azul-marinho com inscrições bordadas",
     theme: "stone",
   },
   {
     number: "02",
-    label: "Moletons",
-    title: "Camadas para vestir com presença.",
-    copy: "A coleção Star em preto, branco e off-white.",
-    image: "/collection/lugano-star-hoodies.png",
-    alt: "Moletons Star da Lugano Clothing em três cores",
+    label: "Club Cap Azul-Marinho",
+    copy: "O monograma LC em um tom clássico.",
+    image: "/collection/lugano-club-cap-navy-lc-only.png",
+    alt: "Club Cap Azul-Marinho com monograma LC",
     theme: "ink",
   },
   {
     number: "03",
-    label: "Bonés",
+    label: "Club Cap Branco",
     title: "O detalhe que fecha o look.",
     copy: "Uma assinatura discreta para acompanhar todos os dias.",
     image: "/collection/lugano-club-cap-off-white-lc-only.png",
     alt: "Club Cap off-white da Lugano Clothing apenas com o monograma LC",
     theme: "sand",
-  },
-  {
-    number: "04",
-    label: "Óculos",
-    title: "Linhas marcantes, sem excesso.",
-    copy: "Riviera: linhas limpas e presença imediata.",
-    image: "/collection/lugano-riviera-reference.jpg",
-    alt: "Óculos Riviera pretos com lentes escuras",
-    theme: "night",
   },
 ];
 
@@ -199,7 +186,7 @@ export default function Home() {
             Atendimento <Arrow />
           </a>
           <button className="cartButton" type="button" onClick={() => setCartOpen(true)} aria-label={`Abrir sacola com ${cart.length} itens`}>Sacola <span>{cart.reduce((sum, item) => sum + item.quantity, 0)}</span></button>
-          <button className="themeToggle" type="button" onClick={toggleTheme} aria-label={darkMode ? "Ativar modo claro" : "Ativar modo escuro"} aria-pressed={darkMode}><span aria-hidden="true">{darkMode ? "☀" : "◐"}</span><b>{darkMode ? "Claro" : "Escuro"}</b></button>
+          <button className="themeToggle" type="button" onClick={toggleTheme} aria-label={darkMode ? "Ativar modo claro" : "Ativar modo escuro"} aria-pressed={darkMode}><span aria-hidden="true">{darkMode ? "◑" : "◐"}</span><b>{darkMode ? "Claro" : "Escuro"}</b></button>
           <button className="menuToggle" type="button" aria-expanded={menuOpen} aria-controls="mobile-menu" onClick={() => setMenuOpen(true)}>
             <span>Menu</span><i aria-hidden="true" />
           </button>
@@ -231,6 +218,7 @@ export default function Home() {
           <button className="cartBackdrop" type="button" onClick={() => setCartOpen(false)} aria-label="Fechar sacola" />
           <section className="cartPanel">
             <header><div><small>Sua seleção</small><h2>Sacola</h2></div><button type="button" onClick={() => setCartOpen(false)} aria-label="Fechar sacola">Fechar</button></header>
+            <div className="checkoutNotice" role="status"><strong>O pagamento online ainda não está disponível.</strong><p>A finalização dos pedidos é feita pelo atendimento no WhatsApp, após a confirmação de disponibilidade, frete e prazo.</p><a href={whatsappUrl("Olá! Quero atendimento para finalizar meu pedido da Lugano Clothing.")} target="_blank" rel="noreferrer">Falar com o atendimento</a></div>
             {cart.length === 0 ? <div className="cartEmpty"><p>Sua sacola está vazia.</p><button type="button" onClick={() => setCartOpen(false)}>Explorar coleção</button></div> : (
               <>
                 <div className="cartItems">{cart.map((item) => (
@@ -270,21 +258,21 @@ export default function Home() {
       )}
 
       <section className="storeHero" id="top" aria-labelledby="hero-title">
-        <div className="storeHeroVisual"><Image src="/hero-lugano-v2.png" alt="Seleção de moletons e camisetas Lugano Clothing" width={1792} height={937} priority sizes="(max-width: 760px) 100vw, 58vw" /><span>Coleção 01 · 2026</span></div>
+        <div className="storeHeroVisual"><StoreImage src="/collection/lugano-monaco-navy-bordado.png" alt="Boné Monaco azul-marinho com monograma LC e assinatura Lugano" width={1087} height={1447} maxWidth={1200} priority sizes="(max-width: 760px) 100vw, 58vw" /><span>Novo · Monaco</span></div>
         <div className="storeHeroCopy">
           <p className="eyebrow">Lugano Clothing</p>
           <h1 id="hero-title">Vista o que<br /><em>fica na memória.</em></h1>
-          <p>Peças diretas, cores bem escolhidas e a assinatura LC para quem prefere presença a excesso.</p>
-          <div className="storeHeroActions"><a className="storePrimary" href="#destaques">Escolher minha peça</a><a className="storeSecondary" href={whatsappUrl("Olá! Quero ajuda para escolher uma peça da Lugano Clothing.")} target="_blank" rel="noreferrer">Quero ajuda <Arrow /></a></div>
+          <p>Bonés de linhas clássicas, cores bem escolhidas e a assinatura Lugano para quem prefere presença a excesso.</p>
+          <div className="storeHeroActions"><a className="storePrimary" href="#destaques">Escolher meu boné</a><a className="storeSecondary" href={whatsappUrl("Olá! Quero ajuda para escolher um boné da Lugano Clothing.")} target="_blank" rel="noreferrer">Quero ajuda <Arrow /></a></div>
         </div>
       </section>
 
-      <aside className="serviceBar" aria-label="Como funciona a compra"><span>01 · Escolha o tamanho</span><span>02 · Envie sua solicitação</span><span>03 · Receba a confirmação</span></aside>
+      <aside className="serviceBar" aria-label="Como funciona a compra"><span>01 · Escolha seu boné</span><span>02 · Fale com a gente</span><span>03 · Receba a confirmação</span></aside>
 
       <section className="categoryShelf shell" id="collection" aria-labelledby="category-title">
         <header data-reveal><p className="eyebrow">Comece por aqui</p><h2 id="category-title">Qual é a sua escolha?</h2></header>
         <div className="categoryCards">
-          {categories.map((category) => <a href="#destaques" className="categoryCard" key={category.label} data-reveal><Image src={category.image} alt={category.alt} width={700} height={700} loading="lazy" sizes="(max-width: 680px) 50vw, 25vw" /><span>{category.number}</span><div><h3>{category.label}</h3><p>{category.copy}</p></div></a>)}
+          {categories.map((category) => <a href="#destaques" className="categoryCard" key={category.label} data-reveal><StoreImage src={category.image} alt={category.alt} width={700} height={700} sizes="(max-width: 1020px) 50vw, 33vw" /><span>{category.number}</span><div><h3>{category.label}</h3><p>{category.copy}</p></div></a>)}
         </div>
       </section>
 
@@ -293,21 +281,21 @@ export default function Home() {
       <section className="productsSection" id="destaques">
         <div className="productsHead shell" data-reveal>
           <div><p className="eyebrow">Seleção Lugano</p><h2>Escolha a peça<br /><em>que fica com você.</em></h2></div>
-          <p>Veja as cores, escolha o tamanho e monte sua seleção. Antes de qualquer pagamento, nossa equipe confirma disponibilidade, frete e prazo.</p>
+          <p>Escolha seu boné e fale com nossa equipe. Antes de qualquer pagamento, confirmamos as medidas, a disponibilidade, o frete e o prazo.</p>
         </div>
         <div className="productGrid shell">
           {products.map((product, index) => (
             <article className="productCard" key={product.name} data-reveal style={{ transitionDelay: `${(index % 3) * 70}ms` }}>
               <div className="productMedia">
-                <Image src={product.image} alt={product.name} width={1200} height={1200} loading="lazy" sizes="(max-width: 680px) 50vw, (max-width: 1020px) 50vw, 33vw" />
-                <span className="productQuick">{product.priceCents ? "Escolha Lugano" : "Sob consulta"}</span>
+                <StoreImage src={product.image} alt={product.name} width={800} height={800} sizes="(max-width: 1020px) 50vw, 33vw" />
+                <span className="productQuick">{product.id === "monaco-navy" || product.id === "tutto-passa-navy" || product.id.startsWith("cursivo-") ? "Novo" : "Escolha Lugano"}</span>
               </div>
               <div className="productMeta">
                 <div className="productIdentity"><p className="productLine">{product.line}</p><h3>{product.name}</h3><p className="productAppeal">{productAppeals[product.id]}</p>{product.price && <p className="productPrice">{product.price}</p>}</div>
                 {product.priceCents && product.sizes ? (
                   <div className="productChoice">
-                    <fieldset><legend>Escolha o tamanho</legend><div>{product.sizes.map((size) => <button className={selectedSizes[product.id] === size ? "is-selected" : ""} type="button" key={size} aria-pressed={selectedSizes[product.id] === size} onClick={() => setSelectedSizes((current) => ({ ...current, [product.id]: size }))}>{size}</button>)}</div></fieldset>
-                    <button className="productContact" type="button" disabled={!selectedSizes[product.id]} onClick={() => addToCart(product, selectedSizes[product.id])}>{selectedSizes[product.id] ? "Adicionar à sacola" : "Escolha um tamanho"}</button>
+                    {product.sizes.length > 1 && <fieldset><legend>Escolha o tamanho</legend><div>{product.sizes.map((size) => <button className={selectedSizes[product.id] === size ? "is-selected" : ""} type="button" key={size} aria-pressed={selectedSizes[product.id] === size} onClick={() => setSelectedSizes((current) => ({ ...current, [product.id]: size }))}>{size}</button>)}</div></fieldset>}
+                    <button className="productContact" type="button" disabled={product.sizes.length > 1 && !selectedSizes[product.id]} onClick={() => addToCart(product, product.sizes.length === 1 ? product.sizes[0] : selectedSizes[product.id])}>Adicionar à sacola</button>
                   </div>
                 ) : <a className="productContact" href={whatsappUrl(`Olá! Quero saber mais sobre ${product.name} da Lugano Clothing.`)} target="_blank" rel="noreferrer">Quero saber mais</a>}
               </div>
@@ -319,9 +307,9 @@ export default function Home() {
       <section className="buyingSection shell" id="como-comprar">
         <div className="buyingIntro" data-reveal><p className="eyebrow">Pedido acompanhado</p><h2>Você escolhe.<br /><em>A gente confirma.</em></h2></div>
         <ol className="buyingSteps">
-          <li data-reveal><span>01</span><div><h3>Escolha peça e tamanho</h3><p>Monte sua seleção com os modelos e cores que fazem sentido para você.</p></div></li>
-          <li data-reveal><span>02</span><div><h3>Envie sua solicitação</h3><p>Preencha os dados necessários para receber a confirmação do pedido.</p></div></li>
-          <li data-reveal><span>03</span><div><h3>Fale com uma pessoa</h3><p>Nossa equipe confirma disponibilidade, frete e prazo antes do pagamento.</p></div></li>
+          <li data-reveal><span>01</span><div><h3>Escolha seu boné</h3><p>Conheça os modelos e escolha sua cor preferida.</p></div></li>
+          <li data-reveal><span>02</span><div><h3>Revise sua sacola</h3><p>Adicione os modelos desejados e confira as quantidades antes de continuar.</p></div></li>
+          <li data-reveal><span>03</span><div><h3>Finalize no site</h3><p>Informe a entrega, confira o frete e siga para o pagamento com segurança.</p></div></li>
         </ol>
       </section>
 
@@ -335,6 +323,11 @@ export default function Home() {
           <div className="footerLinks">
             <div><b>Explore</b>{navItems.map((item) => <a key={item.href} href={item.href}>{item.label}</a>)}</div>
             <div><b>Conecte-se</b><a href="https://instagram.com/lugano_coo" target="_blank" rel="noreferrer">Instagram</a><a href={whatsappUrl("Olá! Preciso de atendimento da Lugano Clothing.")} target="_blank" rel="noreferrer">WhatsApp</a></div>
+          </div>
+          <div aria-label="Políticas da loja">
+            <section aria-labelledby="trocas-title"><b id="trocas-title">Política de Troca e Devolução</b><p>Aceitamos trocas em até 7 dias após o recebimento, desde que o produto esteja sem uso e na embalagem original. Entre em contato pelo WhatsApp para iniciar o processo.</p></section>
+            <section aria-labelledby="entrega-title"><b id="entrega-title">Prazo de Entrega</b><p>O prazo de entrega é confirmado individualmente por nossa equipe antes do pagamento. Trabalhamos com envio para todo o Brasil.</p></section>
+            <section aria-labelledby="privacidade-title"><b id="privacidade-title">Privacidade</b><p>Seus dados são usados exclusivamente para processar seu pedido e não são compartilhados com terceiros.</p></section>
           </div>
           <div className="footerBottom"><small>© 2026 Lugano Clothing. Todos os direitos reservados.</small><small>Moda contemporânea · Brasil</small></div>
         </div>

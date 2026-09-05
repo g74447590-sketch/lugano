@@ -7,6 +7,7 @@ import { formatMoney } from "@/app/catalog";
 import "./admin.css";
 
 export const dynamic = "force-dynamic";
+export const metadata = { robots: { index: false, follow: false } };
 
 export default async function AdminPage() {
   const user = await requireChatGPTUser("/admin");

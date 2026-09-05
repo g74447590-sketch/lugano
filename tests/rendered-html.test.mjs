@@ -33,9 +33,44 @@ test("server-renders the Lugano Clothing homepage", async () => {
   assert.match(html, /Lugano Clothing/i);
   assert.match(html, /Presença/);
   assert.match(html, /5561991541080/);
-  assert.match(html, /Star Hoodie Black/);
+  assert.match(html, /Monaco/);
+  assert.match(html, /R\$ 117/);
+  assert.match(html, /Boné Cursivo Preto/);
+  assert.match(html, /Boné Cursivo Branco/);
+  assert.match(html, /lugano-cursivo-branco\.png/);
+  assert.match(html, /Tutto passa/);
+  assert.match(html, /lugano-tutto-passa-marinho\.png/);
+  assert.match(html, /Boné Cursivo Azul-Escuro/);
+  assert.match(html, /R\$ 80/);
+  assert.doesNotMatch(html, /Star Hoodie|Essential Tee|Riviera|Camisetas|Moletons|Óculos/i);
   assert.doesNotMatch(html, /Chocolate Lugano|cacau|Gramado/i);
   assert.doesNotMatch(html, /codex-preview|SkeletonPreview|Building your site/i);
+
+  const origin = "https://lugano-clothing.g74447590.workers.dev";
+  const metaTags = html.match(/<(?:meta|link)\b[^>]*>/g) ?? [];
+  const canonical = metaTags.find((tag) => tag.includes('rel="canonical"'));
+  assert.equal(new URL(canonical?.match(/href="([^"]+)"/)?.[1] ?? "http://invalid").href, `${origin}/`);
+  for (const [name, path] of [["og:url", "/"], ["og:image", "/og-v2.png"], ["twitter:image", "/og-v2.png"]]) {
+    const tag = metaTags.find((value) => value.includes(`="${name}"`));
+    assert.equal(new URL(tag?.match(/content="([^"]+)"/)?.[1] ?? "http://invalid").href, `${origin}${path}`, `${name} must use the official origin`);
+  }
+  assert.doesNotMatch(metaTags.join("\n"), /carlossergiogomesferreira|chatgpt\.site/);
+  assert.match(html, /<section[^>]*id="manifesto"/);
+  assert.match(html, /Política de Troca e Devolução/);
+  assert.match(html, /Prazo de Entrega/);
+  assert.match(html, /Privacidade/);
+  assert.match(html, /https:\/\/instagram\.com\/lugano_coo/);
+
+  const images = html.match(/<img\b[^>]*>/g) ?? [];
+  assert.equal(images.length, 11);
+  for (const [index, tag] of images.entries()) {
+    const widths = [...tag.matchAll(/(?:&amp;|&)w=(\d+)/g)].map((match) => Number(match[1]));
+    const cap = index === 0 ? 1200 : 800;
+    assert.ok(widths.length > 0);
+    assert.ok(widths.every((width) => width <= cap));
+    assert.ok(widths.includes(cap));
+    assert.ok(tag.includes(`loading="${index === 0 ? "eager" : "lazy"}"`));
+  }
 });
 
 test("keeps the storefront truthful, accessible, and deployable", async () => {
@@ -57,10 +92,16 @@ test("keeps the storefront truthful, accessible, and deployable", async () => {
   assert.match(catalog, /Club Cap Branco[\s\S]*price: "R\$ 75"/);
   assert.match(catalog, /Club Cap Azul-Marinho[\s\S]*price: "R\$ 75"/);
   assert.match(catalog, /lugano-club-cap-navy-lc-only\.png/);
-  assert.match(catalog, /lugano-riviera-reference\.jpg/);
+  assert.match(catalog, /lugano-monaco-navy-bordado\.png/);
   assert.doesNotMatch(catalog, /lugano-bone-tactel-v3-logo-correta\.png|lugano-oculos\.png/);
-  assert.match(catalog, /price: "R\$ 59"/);
-  assert.match(catalog, /price: "R\$ 188"/);
+  assert.match(catalog, /price: "R\$ 117"/);
+  assert.equal((catalog.match(/id: "/g) ?? []).length, 7);
+  assert.equal((catalog.match(/priceCents: 8000, price: "R\$ 80"/g) ?? []).length, 4);
+  assert.match(catalog, /id: "cursivo-white", name: "Boné Cursivo Branco", line: "Boné · Branco", priceCents: 8000/);
+  assert.match(catalog, /id: "tutto-passa-navy", name: "Tutto passa", line: "Boné · Azul-marinho", priceCents: 8000/);
+  assert.match(catalog, /lugano-cursivo-preto\.png/);
+  assert.match(catalog, /lugano-cursivo-azul-escuro\.png/);
+  assert.doesNotMatch(catalog, /Hoodie|Tee|Riviera/);
   assert.doesNotMatch(catalog, /R\$\s*(?:63,90|29,90|125,00)/);
 
   assert.match(layout, /Lugano Clothing — Presença sem excesso/);

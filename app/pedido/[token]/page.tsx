@@ -7,6 +7,7 @@ import { formatMoney } from "@/app/catalog";
 import "./pedido.css";
 
 export const dynamic = "force-dynamic";
+export const metadata = { robots: { index: false, follow: false } };
 
 const statusLabels: Record<string, string> = {
   awaiting_quote: "Aguardando cotação do frete",

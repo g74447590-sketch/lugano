@@ -4,12 +4,13 @@ import "./globals.css";
 
 const sans = Manrope({ variable: "--font-sans", subsets: ["latin"] });
 const editorial = Fraunces({ variable: "--font-editorial", subsets: ["latin"] });
-const siteUrl = "https://lugano-clothing.carlossergiogomesferreira.chatgpt.site";
+const siteUrl = "https://lugano-clothing.g74447590.workers.dev";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: "Lugano Clothing — Presença sem excesso",
-  description: "Camisetas, moletons e acessórios Lugano Clothing. Consulte modelos e disponibilidade pelo WhatsApp.",
+  description: "Conheça os bonés da Lugano Clothing: Club Cap Branco, Club Cap Azul-Marinho e Monaco. Explore a coleção e fale com nossa equipe.",
+  verification: { google: "YyCAPrOL3602sO3Knmrhvrdh-zHz3dqZ4u-6mh4U1HE" },
   alternates: { canonical: "/" },
   icons: { icon: "/favicon.svg", shortcut: "/favicon.svg" },
   openGraph: {
