@@ -185,7 +185,6 @@ export default function Home() {
           <a className="headerContact" href={whatsappUrl("Olá! Quero conhecer a coleção da Lugano Clothing.")} target="_blank" rel="noreferrer">
             Atendimento <Arrow />
           </a>
-          <button className="cartButton" type="button" onClick={() => setCartOpen(true)} aria-label={`Abrir sacola com ${cart.length} itens`}>Sacola <span>{cart.reduce((sum, item) => sum + item.quantity, 0)}</span></button>
           <button className="themeToggle" type="button" onClick={toggleTheme} aria-label={darkMode ? "Ativar modo claro" : "Ativar modo escuro"} aria-pressed={darkMode}><span aria-hidden="true">{darkMode ? "◑" : "◐"}</span><b>{darkMode ? "Claro" : "Escuro"}</b></button>
           <button className="menuToggle" type="button" aria-expanded={menuOpen} aria-controls="mobile-menu" onClick={() => setMenuOpen(true)}>
             <span>Menu</span><i aria-hidden="true" />
@@ -321,13 +320,12 @@ export default function Home() {
         <div className="footerInner shell">
           <div className="footerBrand"><a className="brandLockup" href="#top"><strong>LUGANO</strong><span>CLOTHING</span></a><p>Moda contemporânea com presença.</p></div>
           <div className="footerLinks">
-            <div><b>Explore</b>{navItems.map((item) => <a key={item.href} href={item.href}>{item.label}</a>)}</div>
+            <div aria-label="Políticas da loja">
+              <section aria-labelledby="trocas-title"><b id="trocas-title">Trocas e Devoluções</b><p>Aceitamos trocas em até 7 dias após o recebimento, desde que o produto esteja sem uso e na embalagem original. Entre em contato pelo WhatsApp para iniciar o processo.</p></section>
+              <section aria-labelledby="entrega-title"><b id="entrega-title">Entregas</b><p>O prazo de entrega é confirmado individualmente por nossa equipe antes do pagamento. Enviamos para todo o Brasil.</p></section>
+              <section aria-labelledby="privacidade-title"><b id="privacidade-title">Privacidade</b><p>Seus dados são usados exclusivamente para processar seu pedido e não são compartilhados com terceiros.</p></section>
+            </div>
             <div><b>Conecte-se</b><a href="https://instagram.com/lugano_coo" target="_blank" rel="noreferrer">Instagram</a><a href={whatsappUrl("Olá! Preciso de atendimento da Lugano Clothing.")} target="_blank" rel="noreferrer">WhatsApp</a></div>
-          </div>
-          <div aria-label="Políticas da loja">
-            <section aria-labelledby="trocas-title"><b id="trocas-title">Política de Troca e Devolução</b><p>Aceitamos trocas em até 7 dias após o recebimento, desde que o produto esteja sem uso e na embalagem original. Entre em contato pelo WhatsApp para iniciar o processo.</p></section>
-            <section aria-labelledby="entrega-title"><b id="entrega-title">Prazo de Entrega</b><p>O prazo de entrega é confirmado individualmente por nossa equipe antes do pagamento. Trabalhamos com envio para todo o Brasil.</p></section>
-            <section aria-labelledby="privacidade-title"><b id="privacidade-title">Privacidade</b><p>Seus dados são usados exclusivamente para processar seu pedido e não são compartilhados com terceiros.</p></section>
           </div>
           <div className="footerBottom"><small>© 2026 Lugano Clothing. Todos os direitos reservados.</small><small>Moda contemporânea · Brasil</small></div>
         </div>

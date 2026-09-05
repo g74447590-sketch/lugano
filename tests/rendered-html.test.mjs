@@ -55,9 +55,11 @@ test("server-renders the Lugano Clothing homepage", async () => {
     assert.equal(new URL(tag?.match(/content="([^"]+)"/)?.[1] ?? "http://invalid").href, `${origin}${path}`, `${name} must use the official origin`);
   }
   assert.doesNotMatch(metaTags.join("\n"), /carlossergiogomesferreira|chatgpt\.site/);
-  assert.match(html, /<section[^>]*id="manifesto"/);
-  assert.match(html, /Política de Troca e Devolução/);
-  assert.match(html, /Prazo de Entrega/);
+  for (const id of ["collection", "manifesto", "destaques", "como-comprar"]) {
+    assert.match(html, new RegExp(`<section[^>]*id="${id}"`));
+  }
+  assert.match(html, /Trocas e Devoluções/);
+  assert.match(html, /<b id="entrega-title">Entregas<\/b>/);
   assert.match(html, /Privacidade/);
   assert.match(html, /https:\/\/instagram\.com\/lugano_coo/);
 
@@ -87,6 +89,10 @@ test("keeps the storefront truthful, accessible, and deployable", async () => {
   assert.match(page, /prefers-reduced-motion/);
   assert.match(page, /Continuar pedido/);
   assert.match(page, /Solicitar pedido/);
+  assert.doesNotMatch(page, /className="cartButton"/);
+  assert.doesNotMatch(page, /<b>Explore<\/b>/);
+  assert.match(page, /darkMode \? "◑" : "◐"/);
+  assert.match(page, /darkMode \? "Claro" : "Escuro"/);
   assert.doesNotMatch(page, /Favoritos|Chocolate Lugano/i);
   assert.doesNotMatch(catalog, /Star Drop|price: "R\$ 96"/);
   assert.match(catalog, /Club Cap Branco[\s\S]*price: "R\$ 75"/);
