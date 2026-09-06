@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import Image from "next/image";
 import StoreImage from "./StoreImage";
+import ChatAssistant from "./ChatAssistant";
 import { catalogProducts as products, formatMoney, type CatalogProduct } from "./catalog";
 
 const WHATSAPP_NUMBER = "5561991541080";
@@ -15,6 +16,7 @@ const productAppeals: Record<string, string> = {
   "monaco-navy": "Monte-Carlo, monograma LC e a assinatura Lugano.",
   "club-cap-white": "Monograma LC em uma escolha clara e discreta.",
   "club-cap-navy": "Azul-marinho com o monograma LC em destaque.",
+  "club-cap-black": "Preto com o monograma LC em branco.",
 };
 
 const navItems = [
@@ -46,8 +48,8 @@ const categories = [
     label: "Club Cap Branco",
     title: "O detalhe que fecha o look.",
     copy: "Uma assinatura discreta para acompanhar todos os dias.",
-    image: "/collection/lugano-club-cap-off-white-lc-only.png",
-    alt: "Club Cap off-white da Lugano Clothing apenas com o monograma LC",
+    image: "/collection/lugano-club-cap-branco-lc-preto-clean.jpg",
+    alt: "Club Cap Branco da Lugano Clothing com monograma LC",
     theme: "sand",
   },
 ];
@@ -185,6 +187,7 @@ export default function Home() {
           <a className="headerContact" href={whatsappUrl("Olá! Quero conhecer a coleção da Lugano Clothing.")} target="_blank" rel="noreferrer">
             Atendimento <Arrow />
           </a>
+          <button className="cartButton" type="button" onClick={() => setCartOpen(true)} aria-label={`Abrir sacola com ${cart.reduce((sum, item) => sum + item.quantity, 0)} itens`}>Sacola <span>{cart.reduce((sum, item) => sum + item.quantity, 0)}</span></button>
           <button className="themeToggle" type="button" onClick={toggleTheme} aria-label={darkMode ? "Ativar modo claro" : "Ativar modo escuro"} aria-pressed={darkMode}><span aria-hidden="true">{darkMode ? "◑" : "◐"}</span><b>{darkMode ? "Claro" : "Escuro"}</b></button>
           <button className="menuToggle" type="button" aria-expanded={menuOpen} aria-controls="mobile-menu" onClick={() => setMenuOpen(true)}>
             <span>Menu</span><i aria-hidden="true" />
@@ -217,7 +220,7 @@ export default function Home() {
           <button className="cartBackdrop" type="button" onClick={() => setCartOpen(false)} aria-label="Fechar sacola" />
           <section className="cartPanel">
             <header><div><small>Sua seleção</small><h2>Sacola</h2></div><button type="button" onClick={() => setCartOpen(false)} aria-label="Fechar sacola">Fechar</button></header>
-            <div className="checkoutNotice" role="status"><strong>O pagamento online ainda não está disponível.</strong><p>A finalização dos pedidos é feita pelo atendimento no WhatsApp, após a confirmação de disponibilidade, frete e prazo.</p><a href={whatsappUrl("Olá! Quero atendimento para finalizar meu pedido da Lugano Clothing.")} target="_blank" rel="noreferrer">Falar com o atendimento</a></div>
+            <div className="checkoutNotice" role="status"><strong>Pagamento via Pix.</strong><p>Depois da confirmação de disponibilidade, frete e prazo, o código Pix aparecerá na página do pedido.</p></div>
             {cart.length === 0 ? <div className="cartEmpty"><p>Sua sacola está vazia.</p><button type="button" onClick={() => setCartOpen(false)}>Explorar coleção</button></div> : (
               <>
                 <div className="cartItems">{cart.map((item) => (
@@ -237,7 +240,7 @@ export default function Home() {
       {checkoutOpen && (
         <dialog className="checkoutOverlay" open aria-modal="true" aria-label="Dados do pedido">
           <section className="checkoutPanel">
-            <header><div><small>Etapa 1 de 2</small><h2>Entrega</h2></div><button type="button" onClick={() => setCheckoutOpen(false)}>Voltar</button></header>
+            <header><div><small>Dados de entrega</small><h2>Entrega</h2></div><button type="button" onClick={() => setCheckoutOpen(false)}>Voltar</button></header>
             <form onSubmit={submitOrder}>
               <div className="fieldGrid">
                 <label className="fieldWide">Nome completo<input name="customerName" autoComplete="name" required /></label>
@@ -266,7 +269,7 @@ export default function Home() {
         </div>
       </section>
 
-      <aside className="serviceBar" aria-label="Como funciona a compra"><span>01 · Escolha seu boné</span><span>02 · Fale com a gente</span><span>03 · Receba a confirmação</span></aside>
+      <aside className="serviceBar" aria-label="Como funciona a compra"><span>01 · Escolha seu boné</span><span>02 · Revise sua sacola</span><span>03 · Envie seu pedido</span></aside>
 
       <section className="categoryShelf shell" id="collection" aria-labelledby="category-title">
         <header data-reveal><p className="eyebrow">Comece por aqui</p><h2 id="category-title">Qual é a sua escolha?</h2></header>
@@ -287,7 +290,7 @@ export default function Home() {
             <article className="productCard" key={product.name} data-reveal style={{ transitionDelay: `${(index % 3) * 70}ms` }}>
               <div className="productMedia">
                 <StoreImage src={product.image} alt={product.name} width={800} height={800} sizes="(max-width: 1020px) 50vw, 33vw" />
-                <span className="productQuick">{product.id === "monaco-navy" || product.id === "tutto-passa-navy" || product.id.startsWith("cursivo-") ? "Novo" : "Escolha Lugano"}</span>
+                <span className="productQuick">{product.id === "club-cap-black" || product.id === "monaco-navy" || product.id === "tutto-passa-navy" || product.id.startsWith("cursivo-") ? "Novo" : "Escolha Lugano"}</span>
               </div>
               <div className="productMeta">
                 <div className="productIdentity"><p className="productLine">{product.line}</p><h3>{product.name}</h3><p className="productAppeal">{productAppeals[product.id]}</p>{product.price && <p className="productPrice">{product.price}</p>}</div>
@@ -295,6 +298,7 @@ export default function Home() {
                   <div className="productChoice">
                     {product.sizes.length > 1 && <fieldset><legend>Escolha o tamanho</legend><div>{product.sizes.map((size) => <button className={selectedSizes[product.id] === size ? "is-selected" : ""} type="button" key={size} aria-pressed={selectedSizes[product.id] === size} onClick={() => setSelectedSizes((current) => ({ ...current, [product.id]: size }))}>{size}</button>)}</div></fieldset>}
                     <button className="productContact" type="button" disabled={product.sizes.length > 1 && !selectedSizes[product.id]} onClick={() => addToCart(product, product.sizes.length === 1 ? product.sizes[0] : selectedSizes[product.id])}>Adicionar à sacola</button>
+                    <p className="productFreightNote">Frete e prazo confirmados por WhatsApp antes do pagamento.</p>
                   </div>
                 ) : <a className="productContact" href={whatsappUrl(`Olá! Quero saber mais sobre ${product.name} da Lugano Clothing.`)} target="_blank" rel="noreferrer">Quero saber mais</a>}
               </div>
@@ -308,8 +312,15 @@ export default function Home() {
         <ol className="buyingSteps">
           <li data-reveal><span>01</span><div><h3>Escolha seu boné</h3><p>Conheça os modelos e escolha sua cor preferida.</p></div></li>
           <li data-reveal><span>02</span><div><h3>Revise sua sacola</h3><p>Adicione os modelos desejados e confira as quantidades antes de continuar.</p></div></li>
-          <li data-reveal><span>03</span><div><h3>Finalize no site</h3><p>Informe a entrega, confira o frete e siga para o pagamento com segurança.</p></div></li>
+          <li data-reveal><span>03</span><div><h3>Envie seu pedido</h3><p>Informe seus dados. Nossa equipe confirma disponibilidade, frete e prazo pelo WhatsApp antes do pagamento.</p></div></li>
         </ol>
+      </section>
+
+      <section className="reviewsSection" aria-labelledby="reviews-title">
+        <div className="reviewsInner shell" data-reveal>
+          <div><p className="eyebrow">Experiências reais</p><h2 id="reviews-title">Quem escolhe,<br /><em>conta.</em></h2></div>
+          <p>As primeiras avaliações verificadas de clientes serão publicadas aqui. A Lugano não inventa depoimentos.</p>
+        </div>
       </section>
 
       <section className="closingCta" id="club">
@@ -330,6 +341,7 @@ export default function Home() {
           <div className="footerBottom"><small>© 2026 Lugano Clothing. Todos os direitos reservados.</small><small>Moda contemporânea · Brasil</small></div>
         </div>
       </footer>
+      <ChatAssistant />
     </main>
   );
 }

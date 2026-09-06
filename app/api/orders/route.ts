@@ -27,7 +27,7 @@ export async function POST(request: Request) {
     const items = (body.items ?? []).map((incoming) => {
       const product = catalogProducts.find((entry) => entry.id === incoming.productId && entry.priceCents);
       const quantity = Math.max(1, Math.min(5, Number(incoming.quantity) || 1));
-      const size = clean(incoming.size, 4).toUpperCase();
+      const size = clean(incoming.size, 40);
       if (!product || !product.sizes?.includes(size)) return null;
       return { product, quantity, size };
     }).filter((item): item is NonNullable<typeof item> => Boolean(item));

@@ -19,7 +19,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   if (!order || order.status !== "awaiting_quote") return new Response("Pedido indisponível", { status: 409 });
   const now = new Date().toISOString();
   await db.update(orders).set({ shippingCents, shippingDays, totalCents: order.subtotalCents + shippingCents, status: "awaiting_payment", updatedAt: now }).where(eq(orders.id, orderId));
-  await db.insert(orderEvents).values({ orderId, type: "shipping_confirmed", message: "Frete confirmado. Pagamento liberado em modo de teste.", createdAt: now });
+  await db.insert(orderEvents).values({ orderId, type: "shipping_confirmed", message: "Frete confirmado. O pagamento via Pix foi liberado.", createdAt: now });
   await db.insert(emailOutbox).values({ orderId, eventKey: "shipping_confirmed", recipient: order.customerEmail, subject: `${order.code}: frete confirmado`, template: "shipping_confirmed", createdAt: now }).onConflictDoNothing();
   return NextResponse.redirect(new URL("/admin", request.url), 303);
 }

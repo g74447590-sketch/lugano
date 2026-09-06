@@ -12,6 +12,7 @@
     "deploy": "wrangler deploy --config dist/server/wrangler.json",
     "test": "vinext build && node --test tests/rendered-html.test.mjs",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
+    "qrcode": "node scripts/generate-qrcode.mjs",
     "db:generate": "drizzle-kit generate"
   },
   "dependencies": {
@@ -36,6 +37,7 @@
     "eslint-plugin-react": "7.37.5",
     "eslint-plugin-react-hooks": "7.1.1",
     "globals": "16.4.0",
+    "qrcode": "^1.5.4",
     "react-server-dom-webpack": "19.2.6",
     "tailwindcss": "4.2.1",
     "typescript": "5.9.3",

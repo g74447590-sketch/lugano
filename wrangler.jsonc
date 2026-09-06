@@ -7,6 +7,16 @@
   "images": {
     "binding": "IMAGES"
   },
+  "ai": {
+    "binding": "AI"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "lugano-clothing-production",
+      "database_id": "8a021ec5-0794-4705-9662-461296114070"
+    }
+  ],
   "observability": {
     "enabled": true
   },

@@ -168,6 +168,9 @@ em { font-family: var(--font-editorial), Georgia, serif; font-style: italic; fon
 .productContact { display: inline-flex; align-items: center; justify-content: center; width: 100%; min-height: 46px; padding: 0 16px; border: 1px solid var(--ink); color: var(--stone); background: var(--ink); font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; transition: color .3s, background .3s, opacity .3s; }
 .productContact:hover { color: var(--stone); background: var(--ink); }
 .productContact:disabled { border-color: var(--line-dark); color: rgba(11,21,32,.48); background: transparent; cursor: not-allowed; }
+.productFreightNote { color: rgba(11,21,32,.58); font-size: 11px; line-height: 1.5; }
+.cartButton { min-height: 34px; padding: 0 12px; border: 1px solid rgba(240,239,233,.35); color: var(--stone); background: rgba(11,21,32,.3); font-size: 9px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.cartButton span { display: inline-grid; place-items: center; min-width: 19px; height: 19px; margin-left: 7px; border-radius: 50%; color: var(--ink); background: var(--brass-light); }
 .themeToggle { min-height: 34px; display: inline-flex; align-items: center; gap: 7px; padding: 0 11px; border: 1px solid rgba(240,239,233,.35); color: var(--stone); background: rgba(11,21,32,.3); cursor: pointer; }
 .themeToggle span { font-size: 16px; line-height: 1; }
 .themeToggle b { font-size: 9px; letter-spacing: .08em; text-transform: uppercase; }
@@ -226,6 +229,11 @@ em { font-family: var(--font-editorial), Georgia, serif; font-style: italic; fon
 .buyingIntro h2 { font-size: clamp(56px, 6vw, 88px); }
 .buyingSteps { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--line-dark); }
 .buyingSteps li { display: grid; grid-template-columns: 70px 1fr; padding: 34px 0; border-bottom: 1px solid var(--line-dark); }
+.reviewsSection { padding: 100px 0; color: var(--stone); background: var(--ink-soft); }
+.reviewsInner { display: grid; grid-template-columns: 1fr 1fr; align-items: end; gap: 80px; }
+.reviewsInner h2 { margin: 0; font-size: clamp(48px, 6vw, 82px); }
+.reviewsInner h2 em { color: var(--brass-light); }
+.reviewsInner > p { max-width: 520px; margin: 0 0 10px; color: rgba(240,239,233,.7); font-size: 16px; line-height: 1.8; }
 .buyingSteps li > span { color: var(--brass); font-size: 9px; font-weight: 700; }
 .buyingSteps h3 { margin: 0 0 10px; font-size: 20px; letter-spacing: -.035em; }
 .buyingSteps p { max-width: 460px; margin: 0; color: rgba(11,21,32,.58); font-size: 13px; line-height: 1.7; }
@@ -270,6 +278,7 @@ em { font-family: var(--font-editorial), Georgia, serif; font-style: italic; fon
   .editorialMain { min-height: 620px; }
   .editorialSide { grid-template-columns: 1fr 1fr; grid-template-rows: none; }
   .buyingSection { grid-template-columns: 1fr; gap: 70px; }
+  .reviewsInner { grid-template-columns: 1fr; gap: 42px; }
 }
 
 @media (max-width: 680px) {
@@ -278,6 +287,7 @@ em { font-family: var(--font-editorial), Georgia, serif; font-style: italic; fon
   .nav, .menuTop { min-height: 68px; }
   .nav { gap: 12px; }
   .themeToggle { margin-left: auto; }
+  .cartButton { margin-left: auto; }
   .cartPanel { padding: 24px 18px; }
   .checkoutOverlay { padding: 0; }
   .checkoutPanel { min-height: 100%; margin: 0; padding: 26px 18px; }
@@ -336,6 +346,9 @@ em { font-family: var(--font-editorial), Georgia, serif; font-style: italic; fon
   .editorialSide figure { min-height: 340px; }
   .buyingSection { padding-block: 110px; gap: 60px; }
   .buyingSteps li { grid-template-columns: 46px 1fr; padding: 28px 0; }
+  .reviewsSection { padding: 80px 0; }
+  .reviewsInner { gap: 28px; }
+  .reviewsInner > p { font-size: 15px; }
   .closingCta { min-height: 86svh; }
   .closingInner h2 { font-size: clamp(76px, 22vw, 108px); }
   .closingHorizon { right: -55vw; bottom: -58vw; width: 150vw; }
@@ -474,4 +487,44 @@ em { font-family: var(--font-editorial), Georgia, serif; font-style: italic; fon
   .starFeatureCopy h2 { font-size: 56px; }
   .buyingSection { padding-block: 90px; }
   .closingCta { min-height: 72svh; }
+}
+
+/* Atendimento da loja */
+.storeChat { position: fixed; z-index: 70; right: 22px; bottom: 22px; display: flex; align-items: flex-end; flex-direction: column; gap: 12px; color: var(--ink); }
+.storeChatToggle { min-height: 48px; display: inline-flex; align-items: center; gap: 10px; padding: 0 18px; border: 1px solid rgba(240,239,233,.28); color: var(--stone); background: var(--ink); box-shadow: 0 12px 36px rgba(5,10,15,.22); font-size: 11px; font-weight: 700; letter-spacing: .05em; }
+.storeChatToggle span { width: 8px; height: 8px; border-radius: 50%; background: var(--brass-light); box-shadow: 0 0 0 4px rgba(201,164,107,.14); }
+.storeChatPanel { width: min(390px, calc(100vw - 32px)); max-height: min(650px, calc(100svh - 100px)); display: grid; grid-template-rows: auto minmax(170px, 1fr) auto auto; overflow: hidden; border: 1px solid rgba(11,21,32,.18); background: #f7f4ed; box-shadow: 0 24px 72px rgba(5,10,15,.3); }
+.storeChatPanel > header { display: flex; align-items: flex-start; justify-content: space-between; padding: 22px; color: var(--stone); background: var(--ink); }
+.storeChatPanel header small { color: var(--brass-light); font-size: 9px; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; }
+.storeChatPanel h2 { margin: 6px 0 0; font-family: var(--font-editorial), Georgia, serif; font-size: 27px; font-weight: 500; }
+.storeChatPanel header button { padding: 5px 0; color: rgba(240,239,233,.65); background: transparent; font-size: 10px; text-transform: uppercase; }
+.storeChatMessages { min-height: 250px; padding: 20px; overflow-y: auto; overscroll-behavior: contain; }
+.storeChatMessage { display: flex; align-items: flex-start; flex-direction: column; margin-bottom: 12px; }
+.storeChatMessage p { max-width: 88%; margin: 0; padding: 12px 14px; font-size: 14px; line-height: 1.55; }
+.storeChatMessage.is-assistant p { background: #e8e3d8; }
+.storeChatMessage.is-user { align-items: flex-end; }
+.storeChatMessage.is-user p { color: var(--stone); background: #142333; }
+.storeChatMessage a { margin: 8px 0 0; padding-bottom: 3px; border-bottom: 1px solid var(--ink); font-size: 12px; font-weight: 700; }
+.storeChatSuggestions { display: flex; align-items: flex-start; flex-direction: column; gap: 7px; margin-top: 16px; }
+.storeChatSuggestions button { padding: 9px 11px; border: 1px solid rgba(11,21,32,.25); background: transparent; font-size: 12px; text-align: left; }
+.storeChatLoading { margin: 8px 0; color: rgba(11,21,32,.58); font-size: 12px; }
+.storeChatPanel form { padding: 0 20px 12px; }
+.storeChatPanel form > label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+.storeChatPanel form > div { display: grid; grid-template-columns: 1fr auto; border: 1px solid rgba(11,21,32,.28); background: white; }
+.storeChatPanel input { min-width: 0; min-height: 48px; padding: 0 13px; border: 0; outline: 0; background: transparent; font: inherit; font-size: 14px; }
+.storeChatPanel form button { min-width: 74px; border: 0; color: var(--stone); background: var(--ink); font-size: 10px; font-weight: 700; text-transform: uppercase; }
+.storeChatPanel form button:disabled { opacity: .45; }
+.storeChatPrivacy { margin: 0; padding: 0 20px 16px; color: rgba(11,21,32,.55); font-size: 11px; line-height: 1.45; }
+.darkTheme .storeChatPanel { color: var(--stone); border-color: rgba(240,239,233,.18); background: #101d29; }
+.darkTheme .storeChatMessage.is-assistant p { background: #192a3a; }
+.darkTheme .storeChatMessage a { border-color: var(--stone); }
+.darkTheme .storeChatSuggestions button { border-color: rgba(240,239,233,.28); color: var(--stone); }
+.darkTheme .storeChatLoading, .darkTheme .storeChatPrivacy { color: rgba(240,239,233,.58); }
+.darkTheme .storeChatPanel form > div { border-color: rgba(240,239,233,.24); background: #09131d; }
+.darkTheme .storeChatPanel input { color: var(--stone); }
+
+@media (max-width: 680px) {
+  .storeChat { right: 12px; bottom: 12px; left: 12px; }
+  .storeChatPanel { width: 100%; max-height: calc(100svh - 86px); }
+  .storeChatToggle { align-self: flex-end; }
 }
