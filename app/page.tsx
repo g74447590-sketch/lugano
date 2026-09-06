@@ -175,7 +175,8 @@ export default function Home() {
   };
 
   return (
-    <main className={darkMode ? "darkTheme" : "lightTheme"}>
+    <>
+      <main className={darkMode ? "darkTheme" : "lightTheme"}>
       <header className="siteHeader">
         <div className="nav shell">
           <a className="brandLockup" href="#top" aria-label="Lugano Clothing, página inicial">
@@ -341,7 +342,8 @@ export default function Home() {
           <div className="footerBottom"><small>© 2026 Lugano Clothing. Todos os direitos reservados.</small><small>Moda contemporânea · Brasil</small></div>
         </div>
       </footer>
+      </main>
       <ChatAssistant />
-    </main>
+    </>
   );
 }
