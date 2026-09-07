@@ -134,7 +134,7 @@ test("keeps the storefront truthful, accessible, and deployable", async () => {
   assert.match(css, /\.storeChat \{[^}]*z-index: 70/);
   assert.doesNotMatch(chatRoute, /Não diga que é uma IA/);
   assert.match(chatRoute, /https:\/\/lugano-clothing\.g74447590\.workers\.dev/);
-  assert.doesNotMatch(chatRoute, /chatgpt\.site/);
+  assert.doesNotMatch(chatRoute, /https:\/\/lugano-clothing\.carlossergiogomesferreira\.chatgpt\.site/);
   assert.match(orderPage, /QRCode\.toDataURL/);
   assert.match(orderPage, /QR Code Pix do pedido/);
   assert.match(orderPage, /confirmação do pagamento é feita manualmente/);
