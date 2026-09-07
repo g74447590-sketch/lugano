@@ -31,5 +31,5 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="pt-BR"><body className={`${sans.variable} ${editorial.variable}`}>{children}</body></html>;
+  return <html lang="pt-BR"><body className={`${sans.variable} ${editorial.variable}`}>{children}<template dangerouslySetInnerHTML={{ __html: "<!-- build: 2026-09-06T23:31:46-03:00 -->" }} /></body></html>;
 }

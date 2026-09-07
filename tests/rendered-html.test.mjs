@@ -30,6 +30,7 @@ test("server-renders the Lugano Clothing homepage", async () => {
 
   const html = await response.text();
   assert.match(html, /<title>Bonés Lugano Clothing — Presença sem excesso<\/title>/i);
+  assert.match(html, /<!-- build: 2026-09-06T23:31:46-03:00 -->/);
   assert.match(html, /Lugano Clothing/i);
   assert.match(html, /Presença/);
   assert.match(html, /5561991541080/);
