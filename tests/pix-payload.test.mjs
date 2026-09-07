@@ -30,8 +30,9 @@ function readTlv(payload) {
 
 test("generates a valid fixed-value Pix payload", async () => {
   const { createPixPayload, getPixConfig } = await loadPixModule();
-  const config = getPixConfig({ key: "254af39f-157a-4c72-ad90-95d0f49cf9bf", receiverName: "Gabriel Alves Ferreira", receiverCity: "Brasilia" });
+  const config = getPixConfig({ key: "123.456.789-09", receiverName: "Gabriel Alves Ferreira", receiverCity: "Brasilia" });
   assert.ok(config);
+  assert.equal(config.key.length, 11);
   const payload = createPixPayload(1, config, "PIX-TEST-001");
   const fields = readTlv(payload);
 
@@ -39,7 +40,7 @@ test("generates a valid fixed-value Pix payload", async () => {
   assert.equal(fields.get("01"), "11");
   assert.equal(fields.get("54"), "0.01");
   assert.equal(fields.get("58"), "BR");
-  assert.match(fields.get("26") ?? "", /^0014br\.gov\.bcb\.pix0136[0-9a-f-]{36}$/);
+  assert.match(fields.get("26") ?? "", /^0014br\.gov\.bcb\.pix0111\d{11}$/);
   assert.match(fields.get("63") ?? "", /^[0-9A-F]{4}$/);
 });
 

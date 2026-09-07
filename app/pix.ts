@@ -21,8 +21,13 @@ function normalizeMerchantValue(value: string, maxLength: number) {
   return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase().replace(/[^A-Z0-9 $%*+\-./:]/g, " ").replace(/\s+/g, " ").trim().slice(0, maxLength);
 }
 
+function normalizePixKey(value: string) {
+  const key = value.trim();
+  return /^\d{3}[.\s]?\d{3}[.\s]?\d{3}[-\s]?\d{2}$/.test(key) ? key.replace(/\D/g, "") : key;
+}
+
 export function getPixConfig(value: Partial<PixConfig>): PixConfig | null {
-  const key = value.key?.trim() ?? "";
+  const key = normalizePixKey(value.key ?? "");
   const receiverName = normalizeMerchantValue(value.receiverName ?? "", 25);
   const receiverCity = normalizeMerchantValue(value.receiverCity ?? "", 15);
   return key && receiverName && receiverCity ? { key, receiverName, receiverCity } : null;
