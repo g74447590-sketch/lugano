@@ -1,4 +1,8 @@
-const PIX_BASE_PAYLOAD = "00020101021126580014br.gov.bcb.pix0136254af39f-157a-4c72-ad90-95d0f49cf9bf5204000053039865802BR5922GABRIEL ALVES FERREIRA6008BRASILIA62070503***63042066";
+export type PixConfig = {
+  key: string;
+  receiverName: string;
+  receiverCity: string;
+};
 
 function crc16(value: string) {
   let crc = 0xffff;
@@ -9,12 +13,36 @@ function crc16(value: string) {
   return crc.toString(16).toUpperCase().padStart(4, "0");
 }
 
-export function createPixPayload(totalCents: number) {
-  const payloadWithoutCrc = PIX_BASE_PAYLOAD.slice(0, PIX_BASE_PAYLOAD.lastIndexOf("6304"));
+function field(id: string, value: string) {
+  return `${id}${value.length.toString().padStart(2, "0")}${value}`;
+}
+
+function normalizeMerchantValue(value: string, maxLength: number) {
+  return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase().replace(/[^A-Z0-9 $%*+\-./:]/g, " ").replace(/\s+/g, " ").trim().slice(0, maxLength);
+}
+
+export function getPixConfig(value: Partial<PixConfig>): PixConfig | null {
+  const key = value.key?.trim() ?? "";
+  const receiverName = normalizeMerchantValue(value.receiverName ?? "", 25);
+  const receiverCity = normalizeMerchantValue(value.receiverCity ?? "", 15);
+  return key && receiverName && receiverCity ? { key, receiverName, receiverCity } : null;
+}
+
+export function createPixPayload(totalCents: number, config: PixConfig, transactionId: string) {
   const amount = (totalCents / 100).toFixed(2);
-  const amountField = `54${amount.length.toString().padStart(2, "0")}${amount}`;
-  const countryFieldIndex = payloadWithoutCrc.lastIndexOf("5802BR");
-  if (countryFieldIndex < 0) throw new Error("Campo de país ausente no payload Pix base.");
-  const payloadWithAmount = `${payloadWithoutCrc.slice(0, countryFieldIndex)}${amountField}${payloadWithoutCrc.slice(countryFieldIndex)}6304`;
-  return `${payloadWithAmount}${crc16(payloadWithAmount)}`;
+  const txid = normalizeMerchantValue(transactionId, 25) || "***";
+  const merchantAccount = field("00", "br.gov.bcb.pix") + field("01", config.key);
+  const payloadWithoutCrc = [
+    "000201010211",
+    field("26", merchantAccount),
+    "52040000",
+    "5303986",
+    field("54", amount),
+    "5802BR",
+    field("59", config.receiverName),
+    field("60", config.receiverCity),
+    field("62", field("05", txid)),
+    "6304",
+  ].join("");
+  return `${payloadWithoutCrc}${crc16(payloadWithoutCrc)}`;
 }

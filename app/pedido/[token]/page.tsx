@@ -1,11 +1,12 @@
 import { asc, eq } from "drizzle-orm";
+import { env } from "cloudflare:workers";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import QRCode from "qrcode";
 import { getDb } from "@/db";
 import { orderEvents, orderItems, orders } from "@/db/schema";
 import { formatMoney } from "@/app/catalog";
-import { createPixPayload } from "@/app/pix";
+import { createPixPayload, getPixConfig } from "@/app/pix";
 import "./pedido.css";
 import { CopyPixButton } from "./CopyPixButton";
 
@@ -33,7 +34,9 @@ export default async function OrderPage({ params }: { params: Promise<{ token: s
     db.select().from(orderEvents).where(eq(orderEvents.orderId, order.id)).orderBy(asc(orderEvents.createdAt)),
   ]);
   const quoteReady = order.status === "awaiting_payment" && order.totalCents != null;
-  const pixPayload = quoteReady ? createPixPayload(order.totalCents!) : null;
+  const runtimeEnv = env as unknown as { PIX_KEY?: string; PIX_RECEIVER_NAME?: string; PIX_RECEIVER_CITY?: string };
+  const pixConfig = getPixConfig({ key: runtimeEnv.PIX_KEY, receiverName: runtimeEnv.PIX_RECEIVER_NAME, receiverCity: runtimeEnv.PIX_RECEIVER_CITY });
+  const pixPayload = quoteReady && pixConfig ? createPixPayload(order.totalCents!, pixConfig, order.code) : null;
   const pixQr = pixPayload ? await QRCode.toDataURL(pixPayload, { width: 480, margin: 2, errorCorrectionLevel: "M" }) : null;
 
   return <main className="orderPage">
@@ -41,7 +44,7 @@ export default async function OrderPage({ params }: { params: Promise<{ token: s
     <section className="orderHero"><p>Pedido {order.code}</p><h1>{statusLabels[order.status] ?? order.status}</h1><span>Última atualização: {new Date(order.updatedAt).toLocaleString("pt-BR")}</span></section>
     <div className="orderGrid">
       <section className="orderCard"><h2>Resumo</h2>{items.map((item) => <article key={item.id}><div><strong>{item.productName}</strong><span>Tamanho {item.size} · Quantidade {item.quantity}</span></div><b>{formatMoney(item.unitPriceCents * item.quantity)}</b></article>)}<dl><div><dt>Subtotal</dt><dd>{formatMoney(order.subtotalCents)}</dd></div><div><dt>Frete</dt><dd>{order.shippingCents == null ? "Em cotação" : formatMoney(order.shippingCents)}</dd></div><div className="orderTotal"><dt>Total</dt><dd>{order.totalCents == null ? "A confirmar" : formatMoney(order.totalCents)}</dd></div></dl></section>
-      <aside className="paymentCard"><p>Pagamento</p>{quoteReady ? <><h2>Total confirmado</h2><strong>{formatMoney(order.totalCents!)}</strong><img className="pixQr" src={pixQr!} alt={`QR Code Pix do pedido ${order.code}`} width="240" height="240" /><p className="pixInstruction">Escaneie o QR Code ou copie o código Pix e cole no aplicativo do seu banco.</p><CopyPixButton payload={pixPayload!} /><small>A confirmação do pagamento é feita manualmente pela Lugano.</small></> : <><h2>Aguardando o fornecedor</h2><p>Assim que o frete for confirmado, o valor total e a opção de pagamento aparecerão aqui.</p><span className="waitingPulse">Cotação em andamento</span></>}</aside>
+      <aside className="paymentCard"><p>Pagamento</p>{quoteReady ? pixPayload ? <><h2>Total confirmado</h2><strong>{formatMoney(order.totalCents!)}</strong><img className="pixQr" src={pixQr!} alt={`QR Code Pix do pedido ${order.code}`} width="240" height="240" /><p className="pixInstruction">Escaneie o QR Code ou copie o código Pix e cole no aplicativo do seu banco.</p><CopyPixButton payload={pixPayload} /><small>A confirmação do pagamento é feita manualmente pela Lugano.</small></> : <><h2>Pagamento em configuração</h2><p>O Pix ainda não está disponível para este pedido. A equipe avisará assim que o recebimento estiver validado.</p></> : <><h2>Aguardando o fornecedor</h2><p>Assim que o frete for confirmado, o valor total e a opção de pagamento aparecerão aqui.</p><span className="waitingPulse">Cotação em andamento</span></>}</aside>
       <section className="orderCard orderTimeline"><h2>Atualizações</h2>{events.map((event) => <div key={event.id}><i /><p><strong>{event.message}</strong><span>{new Date(event.createdAt).toLocaleString("pt-BR")}</span></p></div>)}</section>
       <section className="orderCard"><h2>Entrega</h2><p>{order.addressLine}<br />{order.city} · {order.state}<br />CEP {order.postalCode.replace(/(\d{5})(\d{3})/, "$1-$2")}</p>{order.shippingDays && <p>Prazo informado: {order.shippingDays} dias após a postagem.</p>}</section>
     </div>

@@ -4,7 +4,13 @@ import test from "node:test";
 
 async function loadPixModule() {
   const source = await readFile(new URL("../app/pix.ts", import.meta.url), "utf8");
-  const runnableSource = source.replaceAll(": string", "").replaceAll(": number", "");
+  const runnableSource = source
+    .replace(/export type PixConfig = \{[\s\S]*?\};\r?\n\r?\n/, "")
+    .replaceAll(": Partial<PixConfig>", "")
+    .replaceAll(": PixConfig | null", "")
+    .replaceAll(": PixConfig", "")
+    .replaceAll(": string", "")
+    .replaceAll(": number", "");
   return import(`data:text/javascript,${encodeURIComponent(runnableSource)}`);
 }
 
@@ -23,8 +29,10 @@ function readTlv(payload) {
 }
 
 test("generates a valid fixed-value Pix payload", async () => {
-  const { createPixPayload } = await loadPixModule();
-  const payload = createPixPayload(1);
+  const { createPixPayload, getPixConfig } = await loadPixModule();
+  const config = getPixConfig({ key: "254af39f-157a-4c72-ad90-95d0f49cf9bf", receiverName: "Gabriel Alves Ferreira", receiverCity: "Brasilia" });
+  assert.ok(config);
+  const payload = createPixPayload(1, config, "PIX-TEST-001");
   const fields = readTlv(payload);
 
   assert.equal(fields.get("00"), "01");
@@ -33,4 +41,9 @@ test("generates a valid fixed-value Pix payload", async () => {
   assert.equal(fields.get("58"), "BR");
   assert.match(fields.get("26") ?? "", /^0014br\.gov\.bcb\.pix0136[0-9a-f-]{36}$/);
   assert.match(fields.get("63") ?? "", /^[0-9A-F]{4}$/);
+});
+
+test("does not generate Pix without a complete receiver configuration", async () => {
+  const { getPixConfig } = await loadPixModule();
+  assert.equal(getPixConfig({ key: "only-a-key" }), null);
 });

@@ -16,6 +16,9 @@ interface Env {
   RESEND_API_KEY?: string;
   EMAIL_FROM?: string;
   SITE_URL?: string;
+  PIX_KEY?: string;
+  PIX_RECEIVER_NAME?: string;
+  PIX_RECEIVER_CITY?: string;
 }
 
 interface ExecutionContext {
