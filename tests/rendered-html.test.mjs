@@ -42,6 +42,7 @@ test("server-renders the Lugano Clothing homepage", async () => {
   assert.match(html, /lugano-tutto-passa-marinho\.png/);
   assert.match(html, /Cursivo Azul-Escuro/);
   assert.match(html, /Club Cap Preto/);
+  assert.match(html, /Club Cap Preto da Lugano Clothing com monograma LC/);
   assert.match(html, /Frete e prazo confirmados por WhatsApp antes do pagamento/);
   assert.match(html, /A Lugano não inventa depoimentos/);
   assert.match(html, /R\$ 80/);
@@ -68,7 +69,7 @@ test("server-renders the Lugano Clothing homepage", async () => {
   assert.match(html, /Precisa de ajuda\?/);
 
   const images = html.match(/<img\b[^>]*>/g) ?? [];
-  assert.equal(images.length, 12);
+  assert.equal(images.length, 13);
   for (const [index, tag] of images.entries()) {
     const widths = [...tag.matchAll(/(?:&amp;|&)w=(\d+)/g)].map((match) => Number(match[1]));
     const cap = index === 0 ? 1200 : 800;

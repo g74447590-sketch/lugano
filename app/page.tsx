@@ -52,6 +52,14 @@ const categories = [
     alt: "Club Cap Branco da Lugano Clothing com monograma LC",
     theme: "sand",
   },
+  {
+    number: "04",
+    label: "Club Cap Preto",
+    copy: "O monograma LC em contraste marcante.",
+    image: "/collection/lugano-club-cap-preto-lc-clean.jpg",
+    alt: "Club Cap Preto da Lugano Clothing com monograma LC",
+    theme: "ink",
+  },
 ];
 
 function whatsappUrl(message: string) {
@@ -275,7 +283,7 @@ export default function Home() {
       <section className="categoryShelf shell" id="collection" aria-labelledby="category-title">
         <header data-reveal><p className="eyebrow">Comece por aqui</p><h2 id="category-title">Qual é a sua escolha?</h2></header>
         <div className="categoryCards">
-          {categories.map((category) => <a href="#destaques" className="categoryCard" key={category.label} data-reveal><StoreImage src={category.image} alt={category.alt} width={700} height={700} sizes="(max-width: 1020px) 50vw, 33vw" /><span>{category.number}</span><div><h3>{category.label}</h3><p>{category.copy}</p></div></a>)}
+          {categories.map((category) => <a href="#destaques" className="categoryCard" key={category.label} data-reveal><StoreImage src={category.image} alt={category.alt} width={700} height={700} sizes="(max-width: 1020px) 50vw, 25vw" /><span>{category.number}</span><div><h3>{category.label}</h3><p>{category.copy}</p></div></a>)}
         </div>
       </section>
 
