@@ -80,13 +80,16 @@ test("server-renders the Lugano Clothing homepage", async () => {
 });
 
 test("keeps the storefront truthful, accessible, and deployable", async () => {
-  const [page, catalog, layout, css, hosting, chatRoute] = await Promise.all([
+  const [page, catalog, layout, css, hosting, chatRoute, orderPage, emailWorker, envExample] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/catalog.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
     readFile(new URL("../.openai/hosting.json", import.meta.url), "utf8"),
     readFile(new URL("../app/api/chat/route.ts", import.meta.url), "utf8"),
+    readFile(new URL("../app/pedido/[token]/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../worker/email-outbox.ts", import.meta.url), "utf8"),
+    readFile(new URL("../.env.example", import.meta.url), "utf8"),
   ]);
 
   assert.match(page, /const WHATSAPP_NUMBER = "5561991541080"/);
@@ -132,6 +135,11 @@ test("keeps the storefront truthful, accessible, and deployable", async () => {
   assert.doesNotMatch(chatRoute, /Não diga que é uma IA/);
   assert.match(chatRoute, /https:\/\/lugano-clothing\.g74447590\.workers\.dev/);
   assert.doesNotMatch(chatRoute, /chatgpt\.site/);
+  assert.match(orderPage, /QRCode\.toDataURL/);
+  assert.match(orderPage, /QR Code Pix do pedido/);
+  assert.match(orderPage, /confirmação do pagamento é feita manualmente/);
+  assert.doesNotMatch(`${emailWorker}\n${envExample}`, /chatgpt\.site/);
+  assert.match(`${emailWorker}\n${envExample}`, /https:\/\/lugano-clothing\.g74447590\.workers\.dev/);
   assert.match(hosting, /appgprj_6a84a122a06881919a1fe2bbd371c407/);
   assert.match(hosting, /"d1"\s*:\s*"DB"/);
 });
