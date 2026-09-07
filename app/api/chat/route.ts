@@ -8,6 +8,7 @@ type AiBinding = {
 };
 
 const HANDOFF_PATTERN = /\b(estoque|dispon[ií]vel|disponibilidade|frete|cep|prazo|entrega hoje|pix|pagamento|comprovante|atendente|pessoa|humano|troca do meu pedido|meu pedido)\b/i;
+const CHAT_MODEL = "@cf/meta/llama-3.1-8b-instruct-fp8";
 const ALLOWED_ORIGINS = new Set([
   "https://lugano-clothing.g74447590.workers.dev",
 ]);
@@ -63,7 +64,7 @@ export async function POST(request: Request) {
       }, { headers: corsHeaders(request) });
     }
 
-    const result = await ai.run("@cf/meta/llama-3.1-8b-instruct", {
+    const result = await ai.run(CHAT_MODEL, {
       messages: [
         {
           role: "system",
