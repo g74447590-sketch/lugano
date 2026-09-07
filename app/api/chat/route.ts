@@ -7,7 +7,7 @@ type AiBinding = {
   run(model: string, input: Record<string, unknown>): Promise<unknown>;
 };
 
-const HANDOFF_PATTERN = /\b(estoque|dispon[ií]vel|disponibilidade|frete|cep|prazo|entrega hoje|pix|pagamento|comprovante|atendente|pessoa|humano|troca do meu pedido|meu pedido)\b/i;
+const HANDOFF_PATTERN = /\b(estoque|dispon[ií]vel|disponibilidade|frete|cep|prazo|entrega hoje|pix|pagamento|comprovante|atendente|pessoa|humano|troca do meu pedido|meu pedido|voc[eê]s\s+t[eê]m|t[eê]m\s+(?:bon[eê]|produto))\b/i;
 const CHAT_MODEL = "@cf/meta/llama-3.1-8b-instruct-fp8";
 const ALLOWED_ORIGINS = new Set([
   "https://lugano-clothing.g74447590.workers.dev",
