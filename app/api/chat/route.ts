@@ -10,7 +10,6 @@ type AiBinding = {
 const HANDOFF_PATTERN = /\b(estoque|dispon[ií]vel|disponibilidade|frete|cep|prazo|entrega hoje|pix|pagamento|comprovante|atendente|pessoa|humano|troca do meu pedido|meu pedido)\b/i;
 const ALLOWED_ORIGINS = new Set([
   "https://lugano-clothing.g74447590.workers.dev",
-  "https://lugano-clothing.carlossergiogomesferreira.chatgpt.site",
 ]);
 
 function corsHeaders(request: Request) {

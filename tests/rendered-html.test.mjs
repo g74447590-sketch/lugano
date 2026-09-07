@@ -131,7 +131,7 @@ test("keeps the storefront truthful, accessible, and deployable", async () => {
   assert.match(css, /\.storeChat \{[^}]*z-index: 70/);
   assert.doesNotMatch(chatRoute, /Não diga que é uma IA/);
   assert.match(chatRoute, /https:\/\/lugano-clothing\.g74447590\.workers\.dev/);
-  assert.match(chatRoute, /https:\/\/lugano-clothing\.carlossergiogomesferreira\.chatgpt\.site/);
+  assert.doesNotMatch(chatRoute, /chatgpt\.site/);
   assert.match(hosting, /appgprj_6a84a122a06881919a1fe2bbd371c407/);
   assert.match(hosting, /"d1"\s*:\s*"DB"/);
 });

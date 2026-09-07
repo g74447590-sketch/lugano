@@ -26,7 +26,7 @@ export async function processEmailOutbox(env: EmailEnv) {
     ORDER BY e.created_at ASC
     LIMIT 20
   `).all<PendingEmail>();
-  const siteUrl = (env.SITE_URL || "https://lugano-clothing.carlossergiogomesferreira.chatgpt.site").replace(/\/$/, "");
+  const siteUrl = (env.SITE_URL || "https://lugano-clothing.g74447590.workers.dev").replace(/\/$/, "");
   for (const email of result.results) {
     const orderUrl = `${siteUrl}/pedido/${email.access_token}`;
     const isQuote = email.template === "shipping_confirmed";
