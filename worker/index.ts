@@ -19,6 +19,7 @@ interface Env {
   PIX_KEY?: string;
   PIX_RECEIVER_NAME?: string;
   PIX_RECEIVER_CITY?: string;
+  PIX_STATIC_PAYLOAD?: string;
 }
 
 interface ExecutionContext {
