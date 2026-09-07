@@ -26,6 +26,10 @@ function normalizePixKey(value: string) {
   return /^\d{3}[.\s]?\d{3}[.\s]?\d{3}[-\s]?\d{2}$/.test(key) ? key.replace(/\D/g, "") : key;
 }
 
+function normalizeTransactionId(value: string) {
+  return value.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 25) || "***";
+}
+
 export function getPixConfig(value: Partial<PixConfig>): PixConfig | null {
   const key = normalizePixKey(value.key ?? "");
   const receiverName = normalizeMerchantValue(value.receiverName ?? "", 25);
@@ -35,7 +39,7 @@ export function getPixConfig(value: Partial<PixConfig>): PixConfig | null {
 
 export function createPixPayload(totalCents: number, config: PixConfig, transactionId: string) {
   const amount = (totalCents / 100).toFixed(2);
-  const txid = normalizeMerchantValue(transactionId, 25) || "***";
+  const txid = normalizeTransactionId(transactionId);
   const merchantAccount = field("00", "br.gov.bcb.pix") + field("01", config.key);
   const payloadWithoutCrc = [
     "000201010211",

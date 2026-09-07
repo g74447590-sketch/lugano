@@ -41,6 +41,8 @@ test("generates a valid fixed-value Pix payload", async () => {
   assert.equal(fields.get("54"), "0.01");
   assert.equal(fields.get("58"), "BR");
   assert.match(fields.get("26") ?? "", /^0014br\.gov\.bcb\.pix0111\d{11}$/);
+  const additionalFields = readTlv(fields.get("62") ?? "");
+  assert.match(additionalFields.get("05") ?? "", /^[A-Z0-9]{1,25}$/);
   assert.match(fields.get("63") ?? "", /^[0-9A-F]{4}$/);
 });
 
