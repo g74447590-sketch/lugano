@@ -13,7 +13,8 @@ export function createPixPayload(totalCents: number) {
   const payloadWithoutCrc = PIX_BASE_PAYLOAD.slice(0, PIX_BASE_PAYLOAD.lastIndexOf("6304"));
   const amount = (totalCents / 100).toFixed(2);
   const amountField = `54${amount.length.toString().padStart(2, "0")}${amount}`;
-  const countryFieldIndex = payloadWithoutCrc.indexOf("58");
+  const countryFieldIndex = payloadWithoutCrc.lastIndexOf("5802BR");
+  if (countryFieldIndex < 0) throw new Error("Campo de país ausente no payload Pix base.");
   const payloadWithAmount = `${payloadWithoutCrc.slice(0, countryFieldIndex)}${amountField}${payloadWithoutCrc.slice(countryFieldIndex)}6304`;
   return `${payloadWithAmount}${crc16(payloadWithAmount)}`;
 }
